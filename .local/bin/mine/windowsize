@@ -1,0 +1,18 @@
+#!/bin/sh
+
+whole_smaller() {
+	WIDTH=$(xdotool getactivewindow getwindowgeometry | awk '{FS=" "}/Geo/{print $2}' | awk -F x '{print $1}')
+	HEIGHT=$(xdotool getactivewindow getwindowgeometry | awk '{FS=" "}/Geo/{print $2}' | awk -F x '{print $2}')
+	xdotool getactivewindow windowsize $(expr $WIDTH - 20) $(expr $HEIGHT - 10)
+}
+
+whole_bigger() {
+	WIDTH=$(xdotool getactivewindow getwindowgeometry | awk '{FS=" "}/Geo/{print $2}' | awk -F x '{print $1}')
+	HEIGHT=$(xdotool getactivewindow getwindowgeometry | awk '{FS=" "}/Geo/{print $2}' | awk -F x '{print $2}')
+	xdotool getactivewindow windowsize $(expr $WIDTH + 20) $(expr $HEIGHT + 10)
+}
+
+case $1 in
+	smaller) whole_smaller;;
+	bigger) whole_bigger;;
+esac

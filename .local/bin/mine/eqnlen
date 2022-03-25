@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# vars
+maximum_length=$(awk '{print length}' $1 | sort -n | tail -n1)
+num_of_lines=$(expr $(cat $1 | wc -l) - 1 )
+
+# loop
+i=0
+for i in $(seq 1 $num_of_lines); do
+	i=$((i+1))
+
+	# Calculations
+	num_length=$(awk '{print length}' $1 | head -n$i | tail -n1)
+	current_number=$( head -n$i $1 |tail -n1)
+
+	# how many zeros to put
+	zeros_num=`expr $maximum_length - $num_length`
+	zeros=$(echo $(yes 0 | head -n$zeros_num) | sed 's/ //g')
+
+	# the numbers are now equal in width.
+	(echo $current_number | sed "s/^/$zeros/g") >> tmp.tmp
+done
+
+# Preview
+cat tmp.tmp && rm tmp.tmp

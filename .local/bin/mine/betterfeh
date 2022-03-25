@@ -1,0 +1,5 @@
+#!/bin/sh
+
+[ -z "$1" ] && echo "Provide a Picture!" && exit
+
+feh --scale-down --auto-zoom "$1" & xdotool key w & xdotool key w & xdotool key w

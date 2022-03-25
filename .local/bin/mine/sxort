@@ -1,0 +1,30 @@
+#!/bin/sh
+
+bySize(){ du -ah | sort -h -r | cut -f2- | sed 1,2d | sxiv -t -; }
+
+byName(){ ls | sxiv -t -; }
+
+byType(){ ls -1 *.png ; ls -1 *.jpeg ; ls -1 *.jpg ; ls -1 *.gif | sxiv -t -; }
+
+byTime(){ ls -t  | sxiv -t -; }
+
+Shuffle(){ ls | shuf | sxiv -t -; }
+
+helpMe(){
+    echo "Please provide an argument:
+    --size | -s ) bigger --> smaller
+    --name | -n ) alphabetical order a-z
+    --type | -t ) png > jpeg > jpg > gif 
+    --time | -l ) last modified
+    --shuf | -r ) random order
+    --help | -h ) this help message"
+}
+
+case "$1" in
+    --size | -s) bySize ;;
+    --name | -n) byName ;;
+    --type | -t) byType ;;
+    --time | -l) byTime ;;
+    --shuf | -r) Shuffle ;;
+    --help | -h | "") helpMe ;;
+esac

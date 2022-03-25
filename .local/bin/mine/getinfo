@@ -1,0 +1,10 @@
+#!/bin/sh
+choice="$(echo -ne "battery
+clock\ncpu\ncpubars\ndisk\ndoppler\nforecast\nhelp-icon\n
+internet\niplocate\nkblayout\nkbselect\nmailbox\nmemory\n
+moonphase\nmpdup\nmusic\nnettraf\nnews\npacpackages\n
+popupgrade\nprice\ntasks\ntorrent\nvolume" | dmenu )"
+
+choice="$(sed 's/^/sb-/' <<< $choice)"
+
+notify-send "$(${choice})"

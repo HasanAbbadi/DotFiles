@@ -1,0 +1,63 @@
+#!/bin/bash
+
+if [[ $(grep '^htt' <<< $1) ]]; then
+	url=$1
+else
+	ep_num=$1
+fi
+
+extractEpisodes() {
+	curl -s "${url}" --insecure | grep '<a' \
+		| cut -d '"' -f2 > episodes.txt
+
+	in_title=$(head -n1 episodes.txt | grep '^http')
+	if [[ -z $in_title ]]; then
+		sed -i "s+^+${url}+" episodes.txt
+	fi
+}
+
+fromSubtitlesFile() {
+	subNum=$(head -n${ep_num} subtitles.txt | tail -n1)
+	mpv $epNum --sub-file="$subNum"
+}
+
+fromCurrentDir() {
+	subFile=$(find . -type f \
+		| sort -h \
+		| grep -v .*txt \
+		| head -n${ep_num} | tail -n1)
+
+	mpv $epNum --sub-file="$subFile"
+}
+
+watchEp() {
+	isSubFile=$(ls | grep 'subtitles.txt')
+	isSub=$(ls | grep -E '(.srt|.ass|.sup)')
+	epNum=$(head -n${ep_num} episodes.txt | tail -n1)
+	if [[ -n $isSub && -n $isSubFile ]]; then
+		echo -n 'Get subtitles from 1-subtitles.txt or 2-from current folder? (1 or 2): '
+		read NUM
+		if [[ $NUM  == 1 ]]; then
+			fromSubtitlesFile
+		elif [[ $NUM == 2 ]]; then
+			fromCurrentDir
+		else
+			echo $NUM is not an option, options are 1 and 2
+			exit
+		fi
+	elif [[ -n $isSub ]]; then
+		fromCurrentDir
+	elif [[ -n $isSubFile ]]; then
+		fromSubtitlesFile
+	else
+		mpv $epNum
+	fi
+}
+
+if [[ -n $url ]]; then
+	extractEpisodes
+fi
+
+if [[ -n $ep_num ]]; then
+	watchEp
+fi

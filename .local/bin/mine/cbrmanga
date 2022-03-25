@@ -1,0 +1,23 @@
+#!/bin/sh
+# _   _    _    ____    _    _   _ 
+#| | | |  / \  / ___|  / \  | \ | |
+#| |_| | / _ \ \___ \ / _ \ |  \| |
+#|  _  |/ ___ \ ___) / ___ \| |\  |
+#|_| |_/_/   \_\____/_/   \_\_| \_|
+
+
+while true; do
+myManga=$(find -type d | sed "s+./++g" | tail -n +2 | head -n1)
+if [ -z $myManga ]; then
+    break && echo "nothing left"
+fi
+zip -r $myManga $myManga
+rm -rf $myManga
+echo "done zipping and removing"
+myZip=$(ls *.zip | head -n1 )
+mv $myZip $myZip.cbr
+echo "done renaming"
+if [ -z $myZip ]; then
+    break && echo "DONE"
+fi
+done

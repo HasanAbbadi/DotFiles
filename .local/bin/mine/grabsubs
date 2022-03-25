@@ -1,0 +1,74 @@
+#!/bin/sh
+__cleanup(){
+	rm names.tmp 2>/dev/null
+	rm owners.tmp 2>/dev/null
+	rm page.tmp 2>/dev/null
+	rm links.tmp 2>/dev/null
+	rm urls
+}
+
+trap __cleanup EXIT
+
+go_search(){
+    SEARCH=$@
+    URL="http://google.com/search?hl=en&safe=off&q="
+    STRING=`echo $SEARCH | sed 's/ /+/g'`
+    URI="$URL$STRING"
+
+    lynx -dump $URI > raw.tmp
+    sed 's/http/\^http/g' raw.tmp | tr -s "^" "\n" | grep http| sed 's/\ .*//g' > modified.tmp
+    rm raw.tmp
+    sed '/google.com/d' modified.tmp > urls
+    rm modified.tmp
+
+    echo ""
+    cat urls
+    echo ""
+}
+
+go_search "$@ subscene.com" >/dev/null
+page=$(grep "https://subscene.com/subtitles/.*" urls | cut -d '/' -f 1-5 | head -n2 | tail -n1)
+wget -O page.tmp $page 2>/dev/null
+
+links(){
+	if [[ $1 == "-l" ]]; then
+		 grep "/subtitles/.*/$2" page.tmp | cut -d'"' -f2 | sed 's+^+https://subscene.com+g' | head -n10
+	else
+		 grep '/subtitles/.*/' page.tmp | cut -d'"' -f2 | sed 's+^+https://subscene.com+g'
+	fi
+}
+
+names(){
+	if [[ $1 == "-l" ]]; then
+		grep "/subtitles/.*/$2" -B5 -A5 page.tmp | grep '<span>' -A1 | grep -v '^--' | grep -v '<span>' | sed 's/^[[:space:]]*//g' | head -n 10
+	else
+		grep '/subtitles/.*/' -B5 -A5 page.tmp | grep '<span>' -A1 | grep -v '^--' | grep -v '<span>' | sed 's/^[[:space:]]*//g'
+	fi
+}
+
+owner(){
+	if [[ $1 == "-l" ]]; then
+		grep "/subtitles/.*/$2" -A20 page.tmp | grep '/u/[0-9]*' -A 1 | grep -v '/u/[0-9]*' | grep -v '^--' | sed 's/^[[:space:]]*//g' | head -n 10
+	else
+		grep '/u/[0-9]*' -A 1 page.tmp | grep -v '/u/[0-9]*' | grep -v '^--' | sed 's/^[[:space:]]*//g'
+	fi
+}
+
+#cat --number <<< $(paste <(names $@) <(owner $@))
+names "$@" > names.tmp
+owner "$@" > owners.tmp
+
+cat --number names.tmp
+echo "---------------------------------"
+echo -ne "    Choose one: "
+read INPUT
+links "$@" > links.tmp
+my_link=$(cat --number links.tmp 2>/dev/null | grep "[[:space:]]*$INPUT[[:space:]]" | sed "s/[[:space:]]*$INPUT[[:space:]]//g")
+my_name=$(cat --number names.tmp 2>/dev/null | grep "[[:space:]]*$INPUT[[:space:]]" | sed "s/[[:space:]]*$INPUT[[:space:]]//g")
+wget $(curl $my_link 2>/dev/null | grep 'id="downloadButton"' | cut -d'"' -f2 | sed 's+^+https://subscene.com+g') -O $my_name
+
+rm urls 2>/dev/null
+rm links.tmp 2>/dev/null
+rm names.tmp 2>/dev/null
+rm page.tmp 2>/dev/null
+rm owners.tmp 2>/dev/null

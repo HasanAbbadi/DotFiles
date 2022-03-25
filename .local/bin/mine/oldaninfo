@@ -1,0 +1,140 @@
+#!/bin/sh
+# _   _    _    ____    _    _   _ 
+#| | | |  / \  / ___|  / \  | \ | |
+#| |_| | / _ \ \___ \ / _ \ |  \| |
+#|  _  |/ ___ \ ___) / ___ \| |\  |
+#|_| |_/_/   \_\____/_/   \_\_| \_|
+#                                  
+
+# [ flags ]
+
+if [[ $1 == "--list" ]] || [[ $1 == "-l" ]]; then
+    cat ~/.config/aninfo/watchlist && exit
+fi
+
+if [[ $1 == "--add" ]] || [[ $1 == "-a" ]]; then
+    echo "Adding Anime to Watchlist..."
+anime-cli setLimit true 2 && anime-cli "$2" >> ~/.config/aninfo/cache/"$2" && echo "Caching data..." && tuxi ""$2" synopsis" >> ~/.config/aninfo/cache/"$2"
+    if [[ $2 == '' ]]; then 
+        echo "what anime ?" && exit
+        elif [[ $3 == '' ]]; then
+           echo "$2 0" >> ~/.config/aninfo/watchlist 
+           echo "Added $2 as a new anime" && exit
+    else
+        echo "$2 $3" >> ~/.config/aninfo/watchlist 
+        echo "Added $2, ep num. $3."&& exit
+    fi
+fi
+
+if [[ $1 == "--remove" ]] || [[ $1 == "-r" ]]; then
+    sed -i "/$2/d" /home/hasan/.config/aninfo/watchlist
+    rm ~/.config/aninfo/cache/"$2"
+    echo "Removed $2 from list"
+    exit
+fi
+
+if [[ $1 == "-e" ]] || [[ $1 == "--edit" ]]; then
+ vim ~/.config/aninfo/watchlist
+ exit
+fi
+
+if [[ -z $1 ]] || [[ $1 == "-h" ]] || [[ $1 == "--help" ]]; then
+    echo 'Usage: aninfo <FLAG> [NAME]
+    ----------------------------------
+       shows your list of anime           -l || --list
+       add anime to your list             -a || --add
+       remove anime from your list        -r || --remove
+       shows this help message            -h || --help
+       edit your list with vim            -e || --edit
+    ----------------------------------' 
+    exit
+fi
+    
+# [ cache the anime info ]
+
+if [[ -f ~/.config/aninfo/cache/"$(echo "$1" |tr [:upper:] [:lower:])" ]]; then
+cat ~/.config/aninfo/cache/"$(echo "$1" |tr [:upper:] [:lower:])"
+else
+    echo "wait a moment..."
+anime-cli setLimit true 2 && anime-cli "$1" >> ~/.config/aninfo/cache/"$1" && echo "getting anime info..." && tuxi ""$1" synopsis" >> ~/.config/aninfo/cache/"$1"
+cat ~/.config/aninfo/cache/"$1"
+fi
+
+# [ make watchlist if doesn't exist ]
+
+if [[ ! -f ~/.config/aninfo/watchlist ]]; then
+touch ~/.config/aninfo/watchlist
+fi
+
+# [ variables ]
+
+watchlist=$(grep -iF "$1" ~/.config/aninfo/watchlist)
+currentep=$(grep -iF "$1" ~/.config/aninfo/watchlist | awk {'print $2'})
+if [[ $currentep != [0-9] ]]; then
+    currentep=$(grep -iF "$1" ~/.config/aninfo/watchlist | awk {'print $3'})
+    if [[ $currentep != [0-9] ]]; then
+    currentep=$(grep -iF "$1" ~/.config/aninfo/watchlist | awk {'print $4'})
+    if [[ $currentep != [0-9] ]]; then
+    currentep=$(grep -iF "$1" ~/.config/aninfo/watchlist | awk {'print $5'})
+    if [[ $currentep != [0-9] ]]; then
+    currentep=$(grep -iF "$1" ~/.config/aninfo/watchlist | awk {'print $6'})
+    fi
+fi
+fi
+fi
+# [ first prompt ]
+
+sleep 0.5s
+echo -e "$(tput setaf 4)do you wanna watch this anime? $(tput setaf 2)y$(tput sgr 0)/$(tput setaf 1)n$(tput setaf 3)"
+read ANSWER
+if [ "$ANSWER" == "y" ]; then
+    if [[ $watchlist != "$1 $currentep" ]]; then
+     echo "$1 0" >> ~/.config/aninfo/watchlist
+     echo "Added to Watch List"
+     sleep 2s
+ else
+     echo "Already In Watch List"
+     sleep 2s
+     fi
+    watchnext=`expr $currentep + 1`
+    echo -e "$(tput setaf 4) Playing $(tput setaf 2)$1 $(tput setaf 4)Episode num. $(tput setaf 2)$watchnext"
+    anime dl "$1" -e $watchnext --play "mpvquiet" &&
+    sleep 1s
+
+# [ sed command ]
+
+    echo -e "$(tput setaf 4)Mark Episode as Watched? $(tput setaf 2)y$(tput sgr 0)/$(tput setaf 1)n$(tput setaf 3)"
+    read ANSWER
+    if [[ $ANSWER == y ]]; then
+            watchnext=`expr $currentep + 1`
+       sed -i "s/$1\ $currentep/$1\ $watchnext/g" /home/hasan/.config/aninfo/watchlist 
+       echo "$(tput setaf 2)Marked as watched"
+    else
+       echo "$(tput setaf 1)Didn't Mark it as Watched"
+       exit
+    fi
+else 
+echo "How Unfortunate!" && exit
+fi
+
+# [ loop ]
+
+sleep 2s
+echo -e "$(tput setaf 4)Do You Want To Watch The Next Episode? $(tput setaf 2)y$(tput sgr 0)/$(tput setaf 1)n"
+read ANSWER
+while [ "$ANSWER" == "y" ]; do
+    echo -e "$(tput setaf 4)Playing $(tput setaf 2)$1 $(tput setaf 4)Episode num. $(tput setaf 2)$x"
+    anime dl "$1" -e $watchnext -c 1 --play "mpvquiet" &&
+    echo -e "$(tput setaf 4)Mark Episode as Watched? $(tput setaf 2)y$(tput sgr 0)/$(tput setaf 1)n$(tput setaf 3)"
+    read ANSWER
+    if [[ $ANSWER == y ]]; then
+       sed -i "s|$1\ $currentep|$1\ $watchnext|g" /home/hasan/.config/aninfo/watchlist 
+       echo "$(tput setaf 2)Marked as watched"
+    else
+       echo "$(tput setaf 1)Didn't Mark it as Watched"
+       exit
+    fi
+    sleep 2s
+      echo -e "$(tput setaf 4)Playing $(tput setaf 2)$1 $(tput setaf 4)Episode num. $(tput setaf 2)$x"
+      sleep 2s
+done

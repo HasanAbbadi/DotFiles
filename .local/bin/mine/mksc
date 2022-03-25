@@ -1,0 +1,8 @@
+#!/bin/sh
+
+[ -z "$1" ] && echo "Give a name to the script" && exit
+
+touch ~/.config/scripts/"$1"
+chmod +x ~/.config/scripts/"$1"
+sudo ln -s ~/.config/scripts/"$1" /usr/local/bin/
+vim ~/.config/scripts/"$1"
