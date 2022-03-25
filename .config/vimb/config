@@ -1,0 +1,5 @@
+set dark-mode=on
+set download-path=${HOME}/dl
+set editor-command=urxvt -e vim %s
+
+set status-css=color:white;background-color:black;font:12pt DejaVu Sans Mono;

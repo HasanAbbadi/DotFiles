@@ -1,0 +1,426 @@
+" .vimrc
+
+" Init: ===============" {{{
+set runtimepath^=$XDG_CONFIG_HOME/vim
+set runtimepath+=$XDG_DATA_HOME/vim
+set runtimepath+=$XDG_CONFIG_HOME/vim/after
+
+set packpath^=$XDG_DATA_HOME/vim,$XDG_CONFIG_HOME/vim
+set packpath+=$XDG_CONFIG_HOME/vim/after,$XDG_DATA_HOME/vim/after
+
+let g:netrw_home = $XDG_DATA_HOME."/vim"
+call mkdir($XDG_DATA_HOME."/vim/spell", 'p')
+set viewdir=$XDG_DATA_HOME/vim/view | call mkdir(&viewdir, 'p')
+
+set backupdir=$XDG_CACHE_HOME/vim/backup | call mkdir(&backupdir, 'p')
+set directory=$XDG_CACHE_HOME/vim/swap   | call mkdir(&directory, 'p')
+set undodir=$XDG_CACHE_HOME/vim/undo     | call mkdir(&undodir,   'p')
+set undofile
+
+if !has('nvim') | set viminfofile=$XDG_CACHE_HOME/vim/viminfo | endif
+
+"}}}
+
+" Basics: ============= {{{
+filetype plugin on
+let mapleader = ' '                   " <\:·O} /* THE MAGIC WAND
+
+set nocompatible                      " you're a big boi now
+set hidden                            " more than one unsaved buffer
+set nu nuw=1 relativenumber           " line numbers
+set backspace=indent,eol,start        " normal backspace behavior
+set scrolloff=5                       " begin scroll offset
+set nowrap
+set showmode
+set autoindent                        " auto indent new lines
+set formatoptions+=r                  " easier commenting
+set timeoutlen=1000 ttimeoutlen=0     " less timeout
+set textwidth=0                       " no automatic line break
+set smartcase
+set incsearch
+set linebreak
+set path+=**                          " search down to subfolders
+set path+=~/.config/**                " search down to subfolders
+set path+=~/.local/**                 " search down to subfolders
+set completeopt=longest,menuone       " Show menu even if there is only one item
+set complete+=kspell                  " dictionary in Pmenu when spell is enabled
+set shortmess=aoOtIF                  " avoid most of the 'Hit Enter' messages
+set virtualedit=block                 " eaiser time in visual block
+set noruler
+set t_u7=                             " stops starting vim in replace mode
+
+set laststatus=2                              " enable status line all the time
+set statusline=
+set statusline+=%=%<%.15F%*                   " path, trunc to 80 length
+set statusline+=\ [%{strlen(&ft)?&ft:'none'}] " filetype
+set statusline+=%=\ %03l:%02c%*               " current line and column
+set statusline+=%=\ %02p%%%*\ \ \             " percentage
+
+" display matching files in a nice menu
+set wildmenu
+set wildmode=longest,list,full
+
+" prefer spaces over tabs
+set expandtab
+set smarttab
+set shiftwidth=2
+set tabstop=2
+
+" make unwanted characters visible.
+if (&filetype != 'help')
+  set listchars=tab:>~,nbsp:_,trail:·,extends:>,precedes:<
+  set list
+endif
+
+" remove ~ at the end of the buffer -there is a space at the end-
+set fcs=eob:\ 
+
+"===============================
+" }}}
+
+" Functions: ========== {{{
+
+" Switch to English
+function! EngType()
+  set keymap=
+  set norightleft
+endfunction
+
+" Switch to Arabic
+function! AraType()
+    set keymap=arabic
+    set rightleft
+endfunction
+
+" Auto close pair
+function! AddPair(left,right)
+    if (getline(".")[col(".")-1]) == a:right && a:right==a:left
+      return "\<right>" | else | return a:left.a:right."\<left>"
+    endif
+endfunction
+
+" Skip the pair when closing
+function! SkipPair(left,right)
+  return (getline('.')[col('.')-1]) == a:right ? "\<right>" : a:right
+endfunction
+
+" Delete a pair or insert a new line inbetween
+function! ModifyPair(type)
+  let line = getline('.')             | let is    = 0
+  let left = ['(','[','{',"\"","'"]   | let right = [')',']','}',"\"","'"]
+  let lc   = (line[col(".")-2])       | let rc    = (line[col(".")-1])
+
+  if (index(left, lc)>=0)  && (index(right, rc)>=0) | let is = 1 |  endif "(|)
+
+  if a:type == "Delete"
+    if is == 1 | return "\<bs>\<right>\<bs>" | else | return "\<bs>" | endif
+  endif
+  if is == 1 | return "\<CR>\<CR>\<up>"    | else | return "\<CR>" | endif
+endfunction
+
+" scrolling
+function SmoothScroll(direction)
+  let counter=1
+  while counter<&scroll
+    let counter+=1
+    sleep 5m
+    redraw
+    if (a:direction == 1)
+     normal! k
+    else
+     normal! j
+    endif
+  endwhile
+endfunction
+
+function! ToggleComment()
+  if (matchstrpos(split(getline('.'))[0], b:comment_leader)[1] == 0)
+    execute "normal! :".line('.')."s+^\ *".b:comment_leader."++ "
+  else
+    execute "normal! I".b:comment_leader." "
+  endif
+endfunction
+
+" kinda 'smart' tab completion
+function! TabCompletion(direction)
+  if(pumvisible())
+    return a:direction == 1 ? "\<C-n>" : "\<C-p>"
+  else
+    if (getline(".")[col(".")-2]) != '' && (getline(".")[col(".")-2]) != ' '
+      return "\<C-x>\<C-p>"
+    else
+      return "\<Tab>"
+    endif
+  endif
+endfunction
+
+"===============================
+" }}}
+
+" ColorScheme: ======== {{{
+set background=dark
+colorscheme default
+syntax on
+
+" the color column when exceeding 80 characters
+call matchadd('ColorColumn', '\%90v', 100)
+hi ColorColumn ctermbg=134 ctermfg=0
+" line number
+hi LineNr      ctermfg=darkgray
+" special keys
+hi SpecialKey  ctermbg=NONE ctermfg=110
+" when a matched pair is under cursor, ex []
+hi MatchParen  cterm=BOLD ctermbg=234 ctermfg=yellow
+" vertical split line
+hi VertSplit  cterm=NONE ctermbg=0
+
+" folds
+hi Folded ctermbg=233 ctermfg=14
+hi FoldColumn ctermbg=none ctermfg=yellow
+
+" cool italic comments
+hi Comment cterm=Italic
+
+" pop up menu for auto completion
+hi Pmenu      cterm=NONE ctermbg=0       ctermfg=64
+hi PmenuSel   cterm=bold ctermbg=234     ctermfg=lightgreen
+hi PmenuSbar  cterm=bold ctermbg=234
+hi PmenuThumb ctermbg=64
+
+" tabline
+hi TabLineFill cterm=NONE   ctermbg=0
+hi TabLineSel  cterm=BOLD   ctermbg=NONE ctermfg=white
+hi TabLine     cterm=Italic ctermbg=0    ctermfg=8
+
+" statusline
+hi StatusLineNC term=none cterm=none gui=none ctermfg=black
+hi StatusLine term=none ctermfg=darkgray ctermbg=none cterm=nocombine
+
+" }}}
+
+" Mappings: =========== {{{
+nnoremap <silent> <Leader>to :e ~/.local/vim/todo.md<CR>
+
+" smooth scrolling
+nnoremap <silent> <C-u> :call SmoothScroll(1)<Enter>
+nnoremap <silent> <C-d> :call SmoothScroll(0)<Enter>
+
+" switch languages:
+nnoremap <Leader>en :<C-U>call EngType()<CR>
+nnoremap <Leader>ar :<C-U>call AraType()<CR>
+
+" files:
+nnoremap <Leader>ff :find 
+nnoremap <Leader>br :browse 
+nnoremap <Leader>fo :browse oldfiles<CR>
+nnoremap <Leader>fi gg=G                  " fix indentaions
+nnoremap <Leader>so :so %<CR>             " source current file
+nnoremap <Leader>w  :w<CR>
+nnoremap <Leader>q  :q<CR>
+nnoremap <Leader>Q  :q!<CR>
+
+" padding out text and aligning columns
+vnoremap <Leader>o !sed 's/$/\t<++>/' \| column -t -s $'\t'<CR>/<++><CR>:nohl<CR>
+vnoremap <Leader>ca !column -ts "
+
+map <silent> ,, :noh<cr>:redraw!<cr>
+
+" moving text up and down
+xnoremap <C-j> :m '>+1<CR>gv=gv
+xnoremap <C-k> :m '<-2<CR>gv=gv
+inoremap <C-j> <esc>:m .+1<CR>==a
+inoremap <C-k> <esc>:m .-2<CR>==a
+nnoremap <leader>j :m .+1<CR>==
+nnoremap <leader>k :m .-2<CR>==
+
+" indenting in visual
+vnoremap > >gv
+vnoremap < <gv
+
+" easier substitution
+nnoremap <Leader>ss :%s//g<left><left>
+nnoremap <Leader>sl :s//g<left><left>
+vnoremap <Leader>s  "xy:%s/<C-r>x/
+nnoremap <Leader>sc :%s/<C-r><C-w>/<C-r>0/g<CR>
+
+" Auto Pairs: 1.auto-close, 2.visual-surround, 3.change-surround
+let g:pairs=[ ['(', ')'], ['[', ']'], ['{', '}'], ['\"','\"'], ["'","'"],["<",">"],["`","`"]]
+for [right , left] in g:pairs
+  execute 'inoremap <expr> '.split(right,"\\")[0].' AddPair("'.right.'","'.left.'")'
+  if right != left
+    execute 'inoremap <expr> '.split(left,"\\")[0].' SkipPair("'.right.'","'.left.'")'
+  endif
+  execute 'vnoremap <Leader>'.right.' <ESC>`>a'.left.'<ESC>`<i'.right.'<ESC>'
+  execute "nnoremap cs".right." %r".left."<C-o>r".right
+endfor
+
+inoremap <expr>  ModifyPair("Delete")
+inoremap <expr>  ModifyPair("Enter")  " Auto completion below overrides this
+
+" AUTO_COMPLETION:
+inoremap <expr> <Tab> TabCompletion(1)
+inoremap <expr> <S-Tab> TabCompletion(0)
+
+inoremap <expr> <CR> pumvisible() ? "\<C-y>" : ModifyPair("Enter")
+inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
+      \ '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
+
+" inserting empty lines
+nnoremap <silent> <Leader>o :<C-u>call append(line("."),repeat([""], v:count1))<CR>
+nnoremap <silent> <Leader>O :<C-u>call append(line(".")-1,repeat([""], v:count1))<CR>
+
+" changing between splits made easier
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-h> <C-w>h
+nnoremap <C-l> <C-w>l
+
+" changing between buffers made easier
+nnoremap <silent> <C-]> :bn<CR>
+nnoremap <silent> <C-[> :bp<CR>
+nnoremap <silent> <Leader>bl :buffers<CR>
+nnoremap <Leader>bt :buffers<CR>:buffer 
+nnoremap <silent> <Leader>bd :bufdo delete<CR>
+
+" changing between tabs made easier
+nnoremap <silent> <Tab> :tabnext<CR>
+nnoremap <silent> <S-Tab> :tabprevious<CR>
+nnoremap <Leader>tn :tabnew 
+nnoremap <Leader>te :tabnew<CR>
+nnoremap <Leader>tt :tabs<CR>:tab 
+nnoremap <Leader>tf :tabe %<CR>
+nnoremap <Leader>th :tab help 
+
+" command mode
+nnoremap !! :.!
+cnoremap <C-j> <down>
+cnoremap <C-k> <up>
+vnoremap <Leader>: "xy:<C-r>x
+
+" netrw file manager
+nnoremap <silent> <Leader>E :Explore<CR>       " current pwd
+nnoremap <silent> <Leader>e :Explore %:p:h<CR> " current file dir
+
+" copying and pasting in vim :O
+vnoremap <Leader>y "+y
+nnoremap <Leader>Y ggVG"+y
+nnoremap <Leader>p "+p
+vnoremap <Leader>p "_dP
+nnoremap Y y$
+
+" delete the content of a line
+nnoremap <Leader>d S<ESC>
+
+" commenting lines
+nnoremap <silent> <Leader>/ :call ToggleComment()<CR>
+vnoremap <silent> <Leader>/ :call ToggleComment()<CR>
+
+nnoremap <ESC> <ESC>
+"-----------------------------
+" }}}
+
+" Snippets: =========== {{{
+autocmd FileType tex,html,markdown,vim nnoremap <buffer> <Leader><Leader> /[<]++><CR>"_c4l
+autocmd FileType tex,html,markdown     inoremap <buffer> ;; <ESC>/[<]++><CR>"_c4l
+
+autocmd FileType tex call SetLaTeXMaps()
+function! SetLaTeXMaps()
+  inoremap <buffer> 1 \section{}<CR><++><ESC>kf{a
+  inoremap <buffer> 2 \subsection{}<CR><++><ESC>kf{a
+  inoremap <buffer> 3 \subsubsection{}<CR><++><ESC>kf{a
+  inoremap <buffer> i \textit{} <++><ESC>F{a
+  inoremap <buffer> b \textbf{} <++><ESC>F{a
+  inoremap <buffer> e \emph{} <++><ESC>F{a
+endfunction
+
+autocmd FileType html call SetHtmlMaps()
+function! SetHtmlMaps()
+  inoremap <buffer> ! <ESC>:read ~/.vim/templates/html<CR>gg/<title><CR>f>a
+  inoremap <buffer> 1 <h1></h1><CR><++><ESC>k?<h1><CR>f>a
+  inoremap <buffer> 2 <h2></h2><CR><++><ESC>k?<h2><CR>f>a
+  inoremap <buffer> 3 <h3></h3><CR><++><ESC>k?<h3><CR>f>a
+  inoremap <buffer> 4 <h4></h4><CR><++><ESC>k?<h4><CR>f>a
+  inoremap <buffer> 5 <h5></h5><CR><++><ESC>k?<h5><CR>f>a
+  inoremap <buffer> i <i></i> <++><ESC>2F>a
+  inoremap <buffer> b <b></b> <++><ESC>2F>a
+  inoremap <buffer> p <p></p><CR><++><ESC>k?<p><CR>f>a
+  inoremap <buffer> s <script></script><CR><++><ESC>k?<script><CR>f>a
+  inoremap <buffer> S <script src=""></script><CR><++><ESC>k?<script src<CR>f"a
+  inoremap <buffer> c <link rel="stylesheet" href=""/><ESC>F"i
+  inoremap <buffer> I <input></input><CR><++><ESC>k/<input><CR>f>a
+  inoremap <buffer> B <button></button><CR><++><ESC>k/<button><CR>f>a
+endfunction
+
+autocmd FileType markdown call SetMdMaps()
+function! SetMdMaps()
+  inoremap <buffer> 1 # <CR><++><ESC>kA
+  inoremap <buffer> 2 ## <CR><++><ESC>kA
+  inoremap <buffer> 3 ### <CR><++><ESC>kA
+  inoremap <buffer> i ** <++><ESC>F*i
+  inoremap <buffer> b **** <++><ESC>2F*i
+  inoremap <buffer> B ```<CR>```<ESC>kA
+  inoremap <buffer> 3 ```<CR>```<ESC>kA
+  " Check Boxes:
+  noremap  <buffer> ;d :s_\(^\s*\*\?\)_\1 [<C-R>=system('date +\%d/\%m/\%y')<CR><BS>]_<CR>
+  noremap  <buffer> ;x :s_\(^\s*\*\?\)_\1 [x]<CR>
+  noremap  <buffer> ;c :s_\(^\s*\*\?\)_\1 [ ]<CR>
+  " Tables:
+  inoremap <buffer> \|<Tab> \| <++> <ESC>
+  inoremap <buffer> \|-<Tab> \| <++> <ESC>:s/<++>/----/g<CR>A
+  vnoremap <buffer> ;t !column -ts "\|" -o "\|"<CR>
+endfunction
+
+"===============================
+" }}}
+
+" AutoCmd: ============ {{{
+" Commenting blocks of code.
+augroup commenting_blocks_of_code
+  autocmd!
+  autocmd FileType c,cpp,java,scala let b:comment_leader = '//'
+  autocmd FileType javascript       let b:comment_leader = '//'
+  autocmd FileType sh,ruby,python   let b:comment_leader = '#'
+  autocmd FileType conf,fstab,zsh   let b:comment_leader = '#'
+  autocmd FileType xdefaults        let b:comment_leader = '!!'
+  autocmd FileType tex              let b:comment_leader = '%'
+  autocmd FileType markdown         let b:comment_leader = '[comment]:<>('
+  autocmd FileType mail             let b:comment_leader = '>'
+  autocmd FileType vim              let b:comment_leader = '"'
+augroup END
+
+" jump to last position in file from last session
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
+
+" Folds in vimrc
+autocmd FileType vim setlocal foldlevel=0 foldmethod=marker foldcolumn=2
+
+" Run xrdb whenever Xdefaults or Xresources are updated.
+autocmd BufRead,BufNewFile Xresources,Xdefaults,xresources,xdefaults set filetype=xdefaults
+autocmd BufWritePost Xresources,Xdefaults,xresources,xdefaults !xrdb %
+
+" Spell Checking and syntax highlighting
+autocmd FileType tex,markdown,groff,html        set spell! spelllang=en_us
+
+" }}}
+
+" FileExplorer: ======= {{{
+"===============================
+
+let g:netrw_banner=0                            " disble banner 
+let g:netrw_browse_split=4                      " open in prior window
+let g:netrw_altv=1                              " splits right
+let g:netrw_liststyle=3                         " display style
+let g:netrw_keepdir = 0
+let g:netrw_list_hide = '\(^\|\s\s\)\zs\.\S\+'  " hide dotfiles on open
+let g:netrw_winsize = 20                        " size of split
+let g:netrw_localcopydircmd = 'cp -r'           " copy recursively
+
+" highlight marked files
+hi! link netrwMarkFile Search
+
+"===============================
+" }}}
+
+" 2021-2022

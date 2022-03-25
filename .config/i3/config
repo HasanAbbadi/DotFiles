@@ -1,0 +1,208 @@
+# i3 config file
+
+font pango:monospace 10
+
+# Set the super key to be the mod.
+set $mod          Mod4
+set $term         urxvt
+set $termClass    URxvt
+set $browser      vimb
+set $browserClass Vimb
+set $inner_gaps   0
+set $outer_gaps   7
+
+# start those when i3 starts
+exec xrdb ${XDG_CONFIG_HOME:-$HOME/.config}/x11/xresources     # Uncomment to use Xresources colors/settings on startup
+exec wal -R -a 90                                              # restore the pywal theme
+exec mpd                                                       # music player daemon-you might prefer it as a service though
+#exec xcompmgr                                                 # xcompmgr for transparency
+exec picom                                                     # picom for transparency
+exec dunst                                                     # dunst for notifications
+exec xset r rate 300 50                                        # Speed xrate up
+exec unclutter                                                 # Remove mouse when idle
+exec --no-startup-id /home/hw/.config/screenlayout/i3          # multiple monitors setup
+#exec emacs --daemon                                            # Run Emacs as a daemon
+exec xwallpaper --zoom ~/.local/share/wallhaven/wallhaven-45x998.jpg
+
+# start when i3 starts & reloads
+exec_always remaps                                             # run the remaps script.
+
+# all workspaces defaults to the tabbed layout
+workspace_layout  tabbed
+
+# new splits will have no titlebar but tabbed windows titlebar still remains 
+new_window 1pixel
+
+default_border    pixel 3
+hide_edge_borders smart
+gaps inner $inner_gaps
+gaps outer $outer_gaps
+
+# use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod
+
+# changing gaps
+bindsym  $mod+a        mode  "default",  gaps  outer  all  toggle $outer_gaps
+bindsym  $mod+shift+a  mode  "default",  gaps  outer  all  set    $outer_gaps
+bindsym  $mod+z        mode  "default",  gaps  outer  all  plus   10
+bindsym  $mod+Shift+z  mode  "default",  gaps  outer  all  minus  10
+
+# start a terminal
+bindsym $mod+Return  exec /usr/bin/$term
+
+# start rofi (a program launcher)
+bindsym $mod+d       exec /usr/bin/rofi -show run
+bindsym $mod+i       exec ~/.local/bin/mine/getinfo
+
+# switch between opened windows
+bindsym $mod+Shift+o       exec i3switchwindow
+bindsym $mod+o       exec /usr/bin/rofi -show windowcd
+
+# Emacs (a lifestyle)
+bindsym $mod+e       [class="Emacs"] focus
+bindsym $mod+Shift+e exec /usr/bin/emacsclient -c
+bindsym $mod+Ctrl+e  exec /usr/bin/emacs
+
+# start Vieb (a browser).
+# bindsym $mod+w       [class="$browserClass"] focus
+bindsym $mod+w exec /usr/bin/$browser
+
+# alternatively, be Brave.
+bindsym $mod+Ctrl+w  exec /usr/bin/brave
+
+# taking notes in Vim (using VimWiki)
+for_window [ class="$termClass" window_role="notetaker_window" ] floating enable
+bindsym $mod+n        exec $term -e ${HOME}/.local/bin/mine/notetaker
+
+# ncmpcpp (a music player).
+bindsym $mod+m       exec /usr/bin/$term -e "ncmpcpp"
+bindsym $mod+Shift+m [class="$termClass" title="ncmpcpp"] focus
+
+# for youtube videos
+bindsym $mod+Shift+y fullscreen disable, floating enable, resize set 251 170, sticky enable, move window to position 1515 20
+
+# lock the screen
+bindsym $mod+x       exec /usr/bin/slock
+
+# kill focused window
+bindsym $mod+q kill
+
+# Toggle between hide state and show state
+bindsym $mod+b bar mode invisible
+
+# change focus
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+
+# move focused window
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+
+# switch to workspace
+bindsym $mod+1 workspace 1
+bindsym $mod+2 workspace 2
+bindsym $mod+3 workspace 3
+bindsym $mod+4 workspace 4
+bindsym $mod+5 workspace 5
+
+bindsym $mod+bracketright workspace next
+bindsym $mod+bracketleft workspace prev
+
+# move focused container to workspace
+bindsym $mod+Shift+1 move workspace 1
+bindsym $mod+Shift+2 move workspace 2
+bindsym $mod+Shift+3 move workspace 3
+bindsym $mod+Shift+4 move workspace 4
+bindsym $mod+Shift+5 move workspace 5
+
+# handling multiple monitors
+bindsym $mod+Right focus output right
+bindsym $mod+Left focus output left
+bindsym $mod+Shift+bracketright focus output right
+bindsym $mod+Shift+bracketleft focus output left
+
+bindsym $mod+Shift+Right move container to output right
+bindsym $mod+Shift+Left move container to output left
+
+bindsym $mod+Ctrl+Right move workspace to output right
+bindsym $mod+Ctrl+Left move workspace to output left
+
+# toggle split direction
+bindsym $mod+v split toggle
+
+# enter fullscreen mode for the focused container
+bindsym $mod+f fullscreen toggle
+
+# change container layout (stacked, tabbed, default)
+bindsym $mod+s layout stacking
+bindsym $mod+t layout tabbed
+bindsym $mod+Shift+t layout default
+
+# toggle tiling / floating
+bindsym $mod+Shift+space floating toggle
+
+# change focus between tiling / floating windows
+bindsym $mod+space focus mode_toggle
+
+# handling audio
+bindsym $mod+0               exec pamixer -t
+bindsym $mod+equal           exec pamixer --allow-boost -i 3
+bindsym $mod+minus           exec pamixer --allow-boost -d 3
+bindsym $mod+Shift+equal     exec pamixer --allow-boost -i 15
+bindsym $mod+Shift+minus     exec pamixer --allow-boost -d 15
+bindsym $mod+p               exec mpc toggle
+bindsym $mod+comma           exec mpc seek -10
+bindsym $mod+period          exec mpc seek +10
+bindsym $mod+Shift+period    exec mpc next
+bindsym $mod+Shift+comma     exec mpc prev
+
+# more using the keyboard buttons
+bindsym XF86AudioMute        exec pamixer -t
+bindsym XF86AudioRaiseVolume exec pamixer --allow-boost -i 3
+bindsym XF86AudioLowerVolume exec pamixer --allow-boost -d 3
+bindsym XF86AudioPrev        exec mpc prev
+bindsym XF86AudioNext        exec mpc next
+bindsym XF86AudioPause       exec mpc pause
+bindsym XF86AudioPlay        exec mpc play
+bindsym XF86AudioStop        exec mpc stop
+bindsym XF86AudioRewind      exec mpc seek -10
+bindsym XF86AudioForward     exec mpc seek +10
+
+# class                 border  backgr. text    indicator child_border
+client.focused          #33aa21 #285577 #ffffff #2e9ef4   #285577
+client.focused_inactive #333333 #5f676a #ffffff #484e50   #5f676a
+client.unfocused        #333333 #222222 #888888 #292d2e   #222222
+client.urgent           #2f343a #900000 #ffffff #900000   #900000
+client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
+
+client.background       #ffffff
+
+# reload the configuration file
+bindsym $mod+Shift+r reload
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+Shift+c restart
+# exit i3 (logs you out of your X session)
+bindsym $mod+Shift+BackSpace exit
+
+#PYWAL ENABLED THEME
+  set_from_resource  $bg      i3wm.color0  #f0f0f0
+  set_from_resource  $fg      i3wm.color7  #f0f0f0
+  set_from_resource  $bg-foc  i3wm.color14  #f0f0f0
+  set_from_resource  $fg-foc  i3wm.color0  #f0f0f0
+ # class                 border  backgr. text indicator child_border
+  client.focused           $bg-foc  $bg-foc  $fg-foc  $bg-foc  $bg-foc
+  client.focused_inactive  $bg      $bg      $fg      $bg      $bg
+  client.unfocused         $bg      $bg      $fg      $bg      $bg
+  client.urgent            $bg      $bg      $fg      $bg      $bg
+  client.placeholder       $bg      $bg      $fg      $bg      $bg
+  client.background        $bg
+
+# display workspace buttons plus a statusline generated by i3status
+#bar {
+#    workspace_min_width 40
+#    status_command i3status
+#}
