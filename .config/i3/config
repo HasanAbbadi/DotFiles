@@ -13,16 +13,13 @@ set $outer_gaps   7
 
 # start those when i3 starts
 exec xrdb ${XDG_CONFIG_HOME:-$HOME/.config}/x11/xresources     # Uncomment to use Xresources colors/settings on startup
-exec wal -R -a 90                                              # restore the pywal theme
 exec mpd                                                       # music player daemon-you might prefer it as a service though
 #exec xcompmgr                                                 # xcompmgr for transparency
 exec picom                                                     # picom for transparency
 exec dunst                                                     # dunst for notifications
 exec xset r rate 300 50                                        # Speed xrate up
 exec unclutter                                                 # Remove mouse when idle
-exec --no-startup-id /home/hw/.config/screenlayout/i3          # multiple monitors setup
-#exec emacs --daemon                                            # Run Emacs as a daemon
-exec xwallpaper --zoom ~/.local/share/wallhaven/wallhaven-45x998.jpg
+exec --no-startup-id (sleep 2 ; sh ${XDG_CONFIG_HOME}/screenlayout/i3; resetbg)
 
 # start when i3 starts & reloads
 exec_always remaps                                             # run the remaps script.
