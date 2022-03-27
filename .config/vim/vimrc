@@ -246,12 +246,13 @@ nnoremap <Leader>sc :%s/<C-r><C-w>/<C-r>0/g<CR>
 " Auto Pairs: 1.auto-close, 2.visual-surround, 3.change-surround
 let g:pairs=[ ['(', ')'], ['[', ']'], ['{', '}'], ['\"','\"'], ["'","'"],["<",">"],["`","`"]]
 for [right , left] in g:pairs
-  execute 'inoremap <expr> '.split(right,"\\")[0].' AddPair("'.right.'","'.left.'")'
+  let Right=split(right,"\\")[0] | let Left=split(left,"\\")[0]
+  execute 'inoremap <expr> '.Right.' AddPair("'.right.'","'.left.'")'
   if right != left
-    execute 'inoremap <expr> '.split(left,"\\")[0].' SkipPair("'.right.'","'.left.'")'
+    execute 'inoremap <expr> '.Left.' SkipPair("'.right.'","'.left.'")'
   endif
-  execute 'vnoremap <Leader>'.right.' <ESC>`>a'.left.'<ESC>`<i'.right.'<ESC>'
-  execute "nnoremap cs".right." %r".left."<C-o>r".right
+  execute 'vnoremap <Leader>'.Right.' <ESC>`>a'.Left.'<ESC>`<i'.Right.'<ESC>'
+  execute "nnoremap cs".Right." %r".Left."<C-o>r".Right
 endfor
 
 inoremap <expr>  ModifyPair("Delete")
@@ -393,6 +394,9 @@ endif
 
 " Folds in vimrc
 autocmd FileType vim setlocal foldlevel=0 foldmethod=marker foldcolumn=2
+
+" Line number in Markdown
+autocmd FileType markdown setlocal nonu norelativenumber
 
 " Run xrdb whenever Xdefaults or Xresources are updated.
 autocmd BufRead,BufNewFile Xresources,Xdefaults,xresources,xdefaults set filetype=xdefaults

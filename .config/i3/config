@@ -1,6 +1,6 @@
 # i3 config file
 
-font pango:monospace 10
+font pango:Dejav Font Mono 13
 
 # Set the super key to be the mod.
 set $mod          Mod4

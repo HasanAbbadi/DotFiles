@@ -1,5 +1,58 @@
 set dark-mode=on
 set download-path=${HOME}/dl
 set editor-command=urxvt -e vim %s
+set history-max-items=99999
 
-set status-css=color:white;background-color:black;font:12pt DejaVu Sans Mono;
+# If enabled the inputbox will be hidden whenever it contains no text.
+set input-autohide=true
+
+# Enable or disable the spell checking feature.
+set spell-checking=true
+
+# Set comma separated list of spell checking languages to be used for
+# spell checking.
+set spell-checking-languages=en,de
+
+# Enable or disable support for WebGL on pages.
+set webgl=true
+
+nnoremap ; :
+nnoremap : ;
+nnoremap b :open !
+nnoremap B :tabopen !
+nnoremap d :quit<CR>
+nnoremap D :quit!<CR>
+nnoremap O :tabopen 
+nnoremap t :open !/
+nnoremap T :tabopen !/
+
+# + (zoom in), - (zoom out), = (zoom reset)
+nmap + zI
+nmap - zO
+nmap = zz
+
+cnoremap <C-k> OA
+cnoremap <C-j> OB
+
+shortcut-default du
+shortcut-add du=https://duckduckgo.com/?q=$0&ia=images
+shortcut-add ab=https://bbs.archlinux.org/search.php?action=search&author=&forums=&search_in=0&sort_by=0&sort_dir=DESC&show_as=topics&keywords=$0
+shortcut-add au=https://aur.archlinux.org/packages/?O=0&C=0&SeB=nd&outdated=&SB=n&SO=a&PP=50&do_Search=Go&K=$0
+shortcut-add aw=https://wiki.archlinux.org/index.php?title=Special:Search&search=$0
+shortcut-add di=http://dictionary.reference.com/browse/$0
+shortcut-add gi=https://github.com/search?q=$0
+shortcut-add go=https://encrypted.google.com/search?q=$0
+shortcut-add mr=http://www.mrqe.com/search?q=$0
+shortcut-add wi=http://en.wikipedia.org/w/index.php?title=Special:Search&search=$0
+shortcut-add yo=http://www.youtube.com/results?search_query=$0
+
+# GUI color settings
+# Color scheme: Base16 Eighties (https://github.com/chriskempson/base16)
+set completion-css=color:#d3d0c8;background-color:#393939;font:12pt DejaVu Sans Mono;
+set completion-hover-css=color:#d3d0c8;background-color:#393939;font:12pt DejaVu Sans Mono;
+set completion-selected-css=color:#d3d0c8;background-color:#515151;font:12pt DejaVu Sans Mono;
+set input-css=color:#d3d0c8;background-color:#393939;font:12pt DejaVu Sans Mono;
+set input-error-css=color:#f2777a;background-color:#393939;font:12pt DejaVu Sans Mono;
+set status-css=color:#ffcc66;background-color:#393939;font:12pt DejaVu Sans Mono;
+set status-ssl-css=color:#99cc99;background-color:#393939;font:12pt DejaVu Sans Mono;
+set status-ssl-invalid-css=color:#f2777a;background-color:#393939;font:12pt DejaVu Sans Mono;
