@@ -53,13 +53,15 @@ init: ## Initial deploy dotfiles
 	$(LN) {${PWD},${HOME}}/.config/zsh/.zshrc
 	# Everyday Setup
 	$(LN) {${PWD},${HOME}}/.config/i3/config
+	$(LN) {${PWD},${HOME}}/.config/picom/picom.conf
+	$(LN) {${PWD},${HOME}}/.config/tmux/tmux.conf
 	$(LN) {${PWD},${HOME}}/.config/lynx/lynx.lss
 	$(LN) {${PWD},${HOME}}/.config/lynx/lynx.cfg
 	$(LN) {${PWD},${HOME}}/.config/vim/vimrc
+	$(LN) {${PWD},${HOME}}/.config/rofi/config.rasi
+	# Vimb
 	$(LN) {${PWD},${HOME}}/.config/vimb/config
 	$(LN) {${PWD},${HOME}}/.config/vimb/style.css
-	$(LN) {${PWD},${HOME}}/.config/tmux/tmux.conf
-	$(LN) {${PWD},${HOME}}/.config/picom/picom.conf
 	$(LN) {${PWD},${HOME}}/.config/sxiv/exec/key-handler
 
 scripts: ## Install my scripts
