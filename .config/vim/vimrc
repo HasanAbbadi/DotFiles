@@ -175,7 +175,7 @@ hi MatchParen  cterm=BOLD ctermbg=234 ctermfg=yellow
 hi VertSplit  cterm=NONE ctermbg=0
 
 " folds
-hi Folded ctermbg=233 ctermfg=14
+hi Folded ctermbg=black ctermfg=14
 hi FoldColumn ctermbg=none ctermfg=yellow
 
 " cool italic comments
@@ -277,7 +277,7 @@ nnoremap <C-l> <C-w>l
 
 " changing between buffers made easier
 nnoremap <silent> <C-]> :bn<CR>
-nnoremap <silent> <C-[> :bp<CR>
+nnoremap <silent> <C-{> :bp<CR>
 nnoremap <silent> <Leader>bl :buffers<CR>
 nnoremap <Leader>bt :buffers<CR>:buffer 
 nnoremap <silent> <Leader>bd :bufdo delete<CR>
@@ -314,8 +314,6 @@ nnoremap <Leader>d S<ESC>
 " commenting lines
 nnoremap <silent> <Leader>/ :call ToggleComment()<CR>
 vnoremap <silent> <Leader>/ :call ToggleComment()<CR>
-
-nnoremap <ESC> <ESC>
 "-----------------------------
 " }}}
 
@@ -325,41 +323,41 @@ autocmd FileType tex,html,markdown     inoremap <buffer> ;; <ESC>/[<]++><CR>"_c4
 
 autocmd FileType tex call SetLaTeXMaps()
 function! SetLaTeXMaps()
-  inoremap <buffer> 1 \section{}<CR><++><ESC>kf{a
-  inoremap <buffer> 2 \subsection{}<CR><++><ESC>kf{a
-  inoremap <buffer> 3 \subsubsection{}<CR><++><ESC>kf{a
-  inoremap <buffer> i \textit{} <++><ESC>F{a
-  inoremap <buffer> b \textbf{} <++><ESC>F{a
-  inoremap <buffer> e \emph{} <++><ESC>F{a
+  inoremap <buffer> ;1 \section{}<CR><++><ESC>kf{a
+  inoremap <buffer> ;2 \subsection{}<CR><++><ESC>kf{a
+  inoremap <buffer> ;3 \subsubsection{}<CR><++><ESC>kf{a
+  inoremap <buffer> ;i \textit{} <++><ESC>F{a
+  inoremap <buffer> ;b \textbf{} <++><ESC>F{a
+  inoremap <buffer> ;e \emph{} <++><ESC>F{a
 endfunction
 
 autocmd FileType html call SetHtmlMaps()
 function! SetHtmlMaps()
-  inoremap <buffer> ! <ESC>:read ~/.vim/templates/html<CR>gg/<title><CR>f>a
-  inoremap <buffer> 1 <h1></h1><CR><++><ESC>k?<h1><CR>f>a
-  inoremap <buffer> 2 <h2></h2><CR><++><ESC>k?<h2><CR>f>a
-  inoremap <buffer> 3 <h3></h3><CR><++><ESC>k?<h3><CR>f>a
-  inoremap <buffer> 4 <h4></h4><CR><++><ESC>k?<h4><CR>f>a
-  inoremap <buffer> 5 <h5></h5><CR><++><ESC>k?<h5><CR>f>a
-  inoremap <buffer> i <i></i> <++><ESC>2F>a
-  inoremap <buffer> b <b></b> <++><ESC>2F>a
-  inoremap <buffer> p <p></p><CR><++><ESC>k?<p><CR>f>a
-  inoremap <buffer> s <script></script><CR><++><ESC>k?<script><CR>f>a
-  inoremap <buffer> S <script src=""></script><CR><++><ESC>k?<script src<CR>f"a
-  inoremap <buffer> c <link rel="stylesheet" href=""/><ESC>F"i
-  inoremap <buffer> I <input></input><CR><++><ESC>k/<input><CR>f>a
-  inoremap <buffer> B <button></button><CR><++><ESC>k/<button><CR>f>a
+  inoremap <buffer> ;! <ESC>:read ~/.vim/templates/html<CR>gg/<title><CR>f>a
+  inoremap <buffer> ;1 <h1></h1><CR><++><ESC>k?<h1><CR>f>a
+  inoremap <buffer> ;2 <h2></h2><CR><++><ESC>k?<h2><CR>f>a
+  inoremap <buffer> ;3 <h3></h3><CR><++><ESC>k?<h3><CR>f>a
+  inoremap <buffer> ;4 <h4></h4><CR><++><ESC>k?<h4><CR>f>a
+  inoremap <buffer> ;5 <h5></h5><CR><++><ESC>k?<h5><CR>f>a
+  inoremap <buffer> ;i <i></i> <++><ESC>2F>a
+  inoremap <buffer> ;b <b></b> <++><ESC>2F>a
+  inoremap <buffer> ;p <p></p><CR><++><ESC>k?<p><CR>f>a
+  inoremap <buffer> ;s <script></script><CR><++><ESC>k?<script><CR>f>a
+  inoremap <buffer> ;S <script src=""></script><CR><++><ESC>k?<script src<CR>f"a
+  inoremap <buffer> ;c <link rel="stylesheet" href=""/><ESC>F"i
+  inoremap <buffer> ;I <input></input><CR><++><ESC>k/<input><CR>f>a
+  inoremap <buffer> ;B <button></button><CR><++><ESC>k/<button><CR>f>a
 endfunction
 
 autocmd FileType markdown call SetMdMaps()
 function! SetMdMaps()
-  inoremap <buffer> 1 # <CR><++><ESC>kA
-  inoremap <buffer> 2 ## <CR><++><ESC>kA
-  inoremap <buffer> 3 ### <CR><++><ESC>kA
-  inoremap <buffer> i ** <++><ESC>F*i
-  inoremap <buffer> b **** <++><ESC>2F*i
-  inoremap <buffer> B ```<CR>```<ESC>kA
-  inoremap <buffer> 3 ```<CR>```<ESC>kA
+  inoremap <buffer> ;1 # <CR><++><ESC>kA
+  inoremap <buffer> ;2 ## <CR><++><ESC>kA
+  inoremap <buffer> ;3 ### <CR><++><ESC>kA
+  inoremap <buffer> ;i ** <++><ESC>F*i
+  inoremap <buffer> ;b **** <++><ESC>2F*i
+  inoremap <buffer> ;B ```<CR>```<ESC>kA
+  inoremap <buffer> ;3 ```<CR>```<ESC>kA
   " Check Boxes:
   noremap  <buffer> ;d :s_\(^\s*\*\?\)_\1 [<C-R>=system('date +\%d/\%m/\%y')<CR><BS>]_<CR>
   noremap  <buffer> ;x :s_\(^\s*\*\?\)_\1 [x]<CR>

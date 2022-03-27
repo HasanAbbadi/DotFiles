@@ -6,7 +6,7 @@ PACKAGES  += gnome-keyring python-qdarkstyle gvim mpd mpc mpv man-db ncmpcpp new
 PACKAGES  += noto-fonts-emoji ntfs-3g pipewire pipewire-pulse pulsemixer pamixer maim 
 PACKAGES  += unclutter unrar unzip lynx xcape xclip xdotool xorg-xdpyinfo youtube-dl 
 PACKAGES  += mupdf poppler mediainfo fzf bat xorg-xbacklight slock socat 
-PACKAGES  += moreutils 
+PACKAGES  += moreutils rxvt-unicode urxvt-perls
 
 BASE_PKGS	:= filesystem gcc-libs glibc bash coreutils file findutils gawk grep procps-ng sed tar gettext
 BASE_PKGS	+= pciutils psmisc shadow util-linux bzip2 gzip xz licenses pacman systemd systemd-sysvcompat 
@@ -30,25 +30,41 @@ all: allinstall allupdate
 ${HOME}/.local:
 	mkdir -p $<
 
+test:
+	echo $<
+
 init: ## Initial deploy dotfiles
 	echo -en "WARNING: THIS WILL OVERWRITE YOUR CONFIGS"
-	sleep 3
+	for item in $(ls -1 ${PWD}/.config); do
+		mkdir -p ${XDG_CONFIG_HOME}/$<
+	done
+	# X11
 	$(LN) {${PWD},${HOME}}/.config/x11/xresources
 	$(LN) {${PWD},${HOME}}/.config/x11/xinitrc
 	$(LN) {${PWD},${HOME}}/.config/x11/xprofile
+	# SHELL
+	$(LN) {${PWD},${HOME}}/.config/shell/zshnameddirrc
+	$(LN) {${PWD},${HOME}}/.config/shell/bm-dirs
+	$(LN) {${PWD},${HOME}}/.config/shell/aliasrc
+	$(LN) {${PWD},${HOME}}/.config/shell/profile
+	$(LN) {${PWD},${HOME}}/.config/shell/inputrc
+	$(LN) {${PWD},${HOME}}/.config/shell/bm-files
+	$(LN) {${PWD},${HOME}}/.config/shell/shortcutrc
+	# ZSH
+	$(LN) {${PWD},${HOME}}/.config/zsh/.zcompdump
+	$(LN) {${PWD},${HOME}}/.config/zsh/.zshrc
+	# Everyday Setup
 	$(LN) {${PWD},${HOME}}/.config/i3/config
 	$(LN) {${PWD},${HOME}}/.config/lynx/lynx.lss
 	$(LN) {${PWD},${HOME}}/.config/lynx/lynx.cfg
 	$(LN) {${PWD},${HOME}}/.config/vim/vimrc
-	$(LN) {${PWD},${HOME}}/.config/shell/aliasrc
-	$(LN) {${PWD},${HOME}}/.config/shell/profile
-	$(LN) {${PWD},${HOME}}/.config/tmux/tmux.conf
 	$(LN) {${PWD},${HOME}}/.config/vimb/config
+	$(LN) {${PWD},${HOME}}/.config/tmux/tmux.conf
 	$(LN) {${PWD},${HOME}}/.config/picom/picom.conf
+	$(LN) {${PWD},${HOME}}/.config/sxiv/exec/key-handler
 
 scripts: ## Initial deploy dotfiles
-	echo -en "WARNING: THIS WILL OVERWRITE ANY SCRIPT WITH THE SAME NAME"
-	sleep 3
+	echo not done
 
 base: ## Install base and base-devel package
 	$(PACMAN) $(BASE_PKGS)
@@ -56,22 +72,8 @@ base: ## Install base and base-devel package
 install: ## Install arch linux packages using pacman
 	$(PACMAN) $(PACKAGES)
 
-urxvt: ## Init rxvt-unicode terminal
-	$(PACMAN) $@-perls rxvt-unicode
-
-mpv:
-	mkdir -p ${HOME}/.config/mpv
-
-test:
-	echo $@
-
 hosts:
 	sudo $(LN) {${PWD},}/etc/hosts
-
-sxiv: ## Init sxiv
-	$(PACMAN) $@
-	mkdir -p ${HOME}/.config/$@/exec
-	$(LN) {${PWD},${HOME}}/.config/$@/exec/image-info && chmod +x $$_
 
 intel: ## Setup Intel Graphics
 	sudo $(LN) {${PWD},}/etc/X11/xorg.conf.d/20-intel.conf
@@ -86,8 +88,8 @@ testpath: ## Echo PATH
 	GOPATH=$$GOPATH
 	@echo $$GOPATH
 
-allinstall: ## Install EVERYTING
-	gnupg init base install urxvt thinkpad sxiv intel gh 
-	bluetooth desktop screenkey testpath allinstall allupdate
+allinstall: ## Install My Whole Config
+	gnupg base install init thinkpad intel
+	bluetooth screenkey testpath allupdate
 
 allupdate: update
