@@ -11,6 +11,7 @@ My daily used programs are a few:
 | Text Editor        | `Vim`     |
 | CLI Browser (MAIN) | `Lynx`    |
 | GUI Browser        | `Vimb`    |
+| Colorscheme        | `pywal`   |
 
 ## Install Everything
 You can install the whole rice: 
