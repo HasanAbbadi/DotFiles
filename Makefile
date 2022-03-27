@@ -6,7 +6,7 @@ PACKAGES	+= gnome-keyring python-qdarkstyle gvim mpd mpc mpv man-db ncmpcpp news
 PACKAGES	+= ntfs-3g pipewire pipewire-pulse pulsemixer pamixer maim unclutter unrar unzip 
 PACKAGES	+= lynx xcape xclip xdotool xorg-xdpyinfo youtube-dl mupdf poppler mediainfo fzf 
 PACKAGES	+= bat xorg-xbacklight slock socat moreutils rxvt-unicode urxvt-perls 
-PACKAGES	+= noto-fonts-emoji ttf-dejavu
+PACKAGES	+= noto-fonts-emoji ttf-dejavu i3-gaps tmux
 
 PY_PKGS		:= pywal lookatme
 

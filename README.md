@@ -2,8 +2,8 @@
 
 My daily used programs are a few:
 
-| TYPE:              | Program   |
-| +--+               | +--+      |
+|        TYPE:       |  Program  |
+| ----               | ----      |
 | Window Manager     | `i3-gaps` |
 | Compositor         | `Picom`   |
 | Terminal           | `urxvt`   |
