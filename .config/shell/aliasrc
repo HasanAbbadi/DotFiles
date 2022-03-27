@@ -62,9 +62,9 @@ alias \
   xi="sudo xbps-install" \
   xr="sudo xbps-remove -R" \
   xq="xbps-query" \
-  z="zathura"
-  scim="sc-im"
-  lynx='lynx -cfg="~/.config/lynx/lynx.cfg" -lss="~/.config/lynx/lynx.lss"'
+  z="zathura" \
+  scim="sc-im" \
+  lynx="lynx -cfg='~/.config/lynx/lynx.cfg' -lss='~/.config/lynx/lynx.lss' "
 
 alias \
   magit="nvim -c MagitOnly" \

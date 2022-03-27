@@ -2,11 +2,11 @@ export PATH := ${HOME}/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/b
 
 PACKAGES	:= xorg-server xorg-xwininfo xorg-xinit ttf-linux-libertine bc xcompmgr xorg-xprop 
 PACKAGES	+= arandr dosfstools libnotify dunst exfat-utils sxiv xwallpaper ffmpeg 
-PACKAGES	+= gnome-keyring python-qdarkstyle gvim mpd mpc mpv man-db ncmpcpp newsboat 
+PACKAGES	+= gnome-keyring python-qdarkstyle mpd mpc mpv man-db ncmpcpp newsboat 
 PACKAGES	+= ntfs-3g pipewire pipewire-pulse pulsemixer pamixer maim unclutter unrar unzip 
 PACKAGES	+= lynx xcape xclip xdotool xorg-xdpyinfo youtube-dl mupdf poppler mediainfo fzf 
-PACKAGES	+= bat xorg-xbacklight slock socat moreutils rxvt-unicode urxvt-perls 
-PACKAGES	+= noto-fonts-emoji ttf-dejavu i3-gaps tmux
+PACKAGES	+= bat xorg-xbacklight slock socat moreutils rxvt-unicode urxvt-perls dmenu 
+PACKAGES	+= noto-fonts-emoji ttf-dejavu i3-gaps tmux gvim vimb picom rofi rofi-calc
 
 PY_PKGS		:= pywal lookatme
 
@@ -35,7 +35,8 @@ ${HOME}/.local:
 	mkdir -p $<
 
 init: ## Initial deploy dotfiles
-	ls -1 ${PWD}/.config | xargs -I{} mkdir -p ${XDG_CONFIG_HOME:$HOME/.config}/{}
+	# make the needed directories
+	find ${PWD}/.config -maxdepth 2 -type d | tail -n +1 | xargs -I{} mkdir -p ${HOME}/{}
 	# X11
 	$(LN) {${PWD},${HOME}}/.config/x11/xresources
 	$(LN) {${PWD},${HOME}}/.config/x11/xinitrc
@@ -58,6 +59,7 @@ init: ## Initial deploy dotfiles
 	$(LN) {${PWD},${HOME}}/.config/lynx/lynx.lss
 	$(LN) {${PWD},${HOME}}/.config/lynx/lynx.cfg
 	$(LN) {${PWD},${HOME}}/.config/vim/vimrc
+	$(LN) {${PWD},${HOME}}/.config/vim/colors/wal.vim
 	$(LN) {${PWD},${HOME}}/.config/rofi/config.rasi
 	# Vimb
 	$(LN) {${PWD},${HOME}}/.config/vimb/config

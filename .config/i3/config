@@ -1,6 +1,6 @@
 # i3 config file
 
-font pango:Dejav Font Mono 13
+font pango:Dejavu Sans Mono 11
 
 # Set the super key to be the mod.
 set $mod          Mod4
@@ -48,8 +48,10 @@ bindsym  $mod+Shift+z  mode  "default",  gaps  outer  all  minus  10
 bindsym $mod+Return  exec /usr/bin/$term
 
 # start rofi (a program launcher)
-bindsym $mod+d       exec /usr/bin/rofi -show run
-bindsym $mod+i       exec ~/.local/bin/mine/getinfo
+bindsym $mod+d                exec /usr/bin/rofi -show run
+bindsym $mod+i                exec ~/.local/bin/mine/getinfo
+bindsym $mod+apostrophe       exec /usr/bin/rofi -show calc
+bindsym $mod+shift+apostrophe exec /usr/bin/rofi -show emoji
 
 # switch between opened windows
 bindsym $mod+Shift+o       exec i3switchwindow

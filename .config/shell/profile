@@ -30,6 +30,8 @@ export WGETRC="${XDG_CONFIG_HOME:-$HOME/.config}/wget/wgetrc"
 export INPUTRC="${XDG_CONFIG_HOME:-$HOME/.config}/shell/inputrc"
 export ZDOTDIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
 export VIMINIT='let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
+export LYNX_CFG="${XDG_CONFIG_HOME}/lynx/lynx.cfg"
+export LYNX_LSS="${XDG_CONFIG_HOME}/lynx/lynx.lss"
 #export ALSA_CONFIG_PATH="$XDG_CONFIG_HOME/alsa/asoundrc"
 export NODE_REPL_HISTORY="$XDG_DATA_HOME"/node_repl_history
 export SSB_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/zoom"
