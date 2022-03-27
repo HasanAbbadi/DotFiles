@@ -29,7 +29,7 @@ help:
 	| sort \
 	| awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-all: allinstall allupdate
+all: allinstall
 
 ${HOME}/.local:
 	mkdir -p $<
