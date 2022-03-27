@@ -26,12 +26,6 @@ google () {
   lynx -cfg="~/.config/lynx/lynx.cfg" -lss="~/.config/lynx/lynx.lss" "https://www.google.com/search?hl=en&q=$*"
 }
 
-alias dotfiles="/usr/bin/git --git-dir=${HOME}/.local/repos/dotfiles --work-tree=$HOME"
-alias to="source ~/.local/bin/mine/to"
-alias scim="sc-im"
-alias mpvg="mpv --player-operation-mode=pseudo-gui"
-alias mpvm="mpv --vo=null --video=no --no-video --term-osd-bar"
-alias lynx='lynx -cfg="~/.config/lynx/lynx.cfg" -lss="~/.config/lynx/lynx.lss"'
 alias \?="duck"
 alias \?\?="google"
 
@@ -45,6 +39,8 @@ alias \
   yt="youtube-dl --format 'bestvideo[height=?720][vcodec!=?vp9]+bestaudio/best' --add-metadata -i" \
   yta="yt -x -f bestaudio/best" \
   ffmpeg="ffmpeg -hide_banner"
+  mpvg="mpv --player-operation-mode=pseudo-gui"
+  mpvm="mpv --vo=null --video=no --no-video --term-osd-bar"
 
 # Colorize commands when possible.
 alias \
@@ -67,6 +63,8 @@ alias \
   xr="sudo xbps-remove -R" \
   xq="xbps-query" \
   z="zathura"
+  scim="sc-im"
+  lynx='lynx -cfg="~/.config/lynx/lynx.cfg" -lss="~/.config/lynx/lynx.lss"'
 
 alias \
   magit="nvim -c MagitOnly" \

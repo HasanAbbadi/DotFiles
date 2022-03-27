@@ -159,7 +159,7 @@ endfunction
 
 " ColorScheme: ======== {{{
 set background=dark
-colorscheme default
+colorscheme wal
 syntax on
 
 " the color column when exceeding 80 characters
