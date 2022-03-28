@@ -13,3 +13,4 @@ sc  $HOME/.local/bin
 src $HOME/.local/src
 vv  ${XDG_VIDEOS_DIR:-$HOME/vids}
 wh  ${XDG_DATA_HOME}/wallhaven
+dot ${HOME}/.local/repos/dotfiles

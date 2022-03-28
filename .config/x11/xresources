@@ -3,7 +3,6 @@
 
 !! Set a default font and font size as below:
 !! *.font: JetBrainsMono Nerd Font:size=12
-*.font: monospace:size=14
 !! dmenu.background:  #de352e
 
 
@@ -12,6 +11,7 @@
 !! URxvt
 !! URxvt.font: xft:monospace:pixelsize=16, xft:Noto Color Emoji
 
+*.font: monospace:size=14
 URxvt.font: xft:DejaVu Sans Mono:pixelsize=18, xft:Amiri:pixelsize=16
 
 ! Hund Colorscheme
