@@ -36,6 +36,8 @@ ${HOME}/.local:
 
 init: ## Initial deploy dotfiles
 	# make the needed directories
+	mkdir -p ${HOME}/.config
+	mkdir -p ${HOME}/.local
 	find ${PWD}/.config -maxdepth 2 -type d | tail -n +1 | xargs -I{} mkdir -p ${HOME}/{}
 	# X11
 	$(LN) {${PWD},${HOME}}/.config/x11/xresources
