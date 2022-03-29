@@ -154,6 +154,18 @@ function! TabCompletion(direction)
   endif
 endfunction
 
+" Fuzzy Finding
+function! Fuzzy() abort
+    let l:tempname = tempname()
+ " execute "silent !clear && ls | fzf -m --preview 'bat --color=always --style=plain  {}' --height=100  | awk '{ print $1\":1:0\" }' > " . fnameescape(l:tempname)
+ execute "silent !clear && ls | fzy -l20 | awk '{ print $1\":1:0\" }' > " . fnameescape(l:tempname)
+    try
+        execute 'silent cfile ' . l:tempname
+        redraw!
+    finally
+        call delete(l:tempname)
+    endtry
+endfunction
 "===============================
 " }}}
 
@@ -211,10 +223,12 @@ nnoremap <Leader>ar :<C-U>call AraType()<CR>
 
 " files:
 nnoremap <Leader>ff :find 
-nnoremap <Leader>br :browse 
+nnoremap <leader>fa :call Fuzzy()<CR>
+nnoremap <Leader>fi gg=G2<C-o>                   " fix indentaions
 nnoremap <Leader>fo :browse oldfiles<CR>
-nnoremap <Leader>fi gg=G                  " fix indentaions
-nnoremap <Leader>so :so %<CR>             " source current file
+nnoremap <Leader>br :browse 
+nnoremap <Leader>so :so %<CR>                    " source current file
+nnoremap <Leader>sv :so ~/.config/vim/vimrc<CR>  " source vimrc
 nnoremap <Leader>w  :w<CR>
 nnoremap <Leader>q  :q<CR>
 nnoremap <Leader>Q  :q!<CR>

@@ -12,7 +12,7 @@
 !! URxvt.font: xft:monospace:pixelsize=16, xft:Noto Color Emoji
 
 *.font: monospace:size=14
-URxvt.font: xft:DejaVu Sans Mono:pixelsize=18, xft:Amiri:pixelsize=16
+URxvt.font: xft:DejaVu Sans Mono:pixelsize=18, xft:Symbola
 
 ! Hund Colorscheme
 !! ! special
