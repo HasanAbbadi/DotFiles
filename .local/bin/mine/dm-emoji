@@ -1,4 +1,0 @@
-#!/bin/sh
-
-grep -v "#" emoji-data.txt | dmenu -i -b -l 20 -fn "Noto Color Emoji-20" |awk {print'$1'}| xsel --clipboard --input
-

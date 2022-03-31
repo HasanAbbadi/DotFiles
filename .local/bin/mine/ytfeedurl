@@ -1,7 +1,0 @@
-#!/bin/sh
-
-video_link=$(ytfzf -D -L)
-channel_id=$(youtube-dl -J "$video_link" | jq '.channel_id' | sed 's/"//g')
-
-printf "https://www.youtube.com/feeds/videos.xml?channel_id=$channel_id" | xclip -selection clipboard
-notify-send "Channel Id copied to clipboard."

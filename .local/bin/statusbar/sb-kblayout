@@ -1,1 +1,0 @@
-setxkbmap -query | awk '{print $2}' | tail -n1

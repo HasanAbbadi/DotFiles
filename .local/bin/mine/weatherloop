@@ -1,7 +1,0 @@
-#!/bin/sh
-
-while true; do
-    cat /tmp/weather.txt
-    sleep 5s
-done
-

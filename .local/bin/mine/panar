@@ -1,5 +1,0 @@
-#!/bin/sh
-
-pandoc "$1" -o output.pdf --pdf-engine=xelatex\
-  --variable mainfont=Amiri --variable sansfont=Amiri\
-  -t beamer

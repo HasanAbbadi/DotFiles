@@ -1,6 +1,0 @@
-#!/bin/sh
-
-youtube-dl "ytsearch:$*" \
-	--extract-audio \
-	--audio-format mp3 \
-	--output "~/Music/%(channel)s/%(title)s.%(ext)s" \
