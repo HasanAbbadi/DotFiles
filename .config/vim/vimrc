@@ -291,8 +291,8 @@ nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
 
 " changing between buffers made easier
-nnoremap <silent> <C-]> :bn<CR>
-nnoremap <silent> <C-{> :bp<CR>
+nnoremap <silent> <C-n> :bn<CR>
+nnoremap <silent> <C-p> :bp<CR>
 nnoremap <silent> <Leader>bl :buffers<CR>
 nnoremap <Leader>bt :buffers<CR>:buffer 
 nnoremap <silent> <Leader>bd :bufdo delete<CR>
@@ -313,8 +313,8 @@ cnoremap <C-k> <up>
 vnoremap <Leader>: "xy:<C-r>x
 
 " netrw file manager
-nnoremap <silent> <Leader>E :Explore<CR>       " current pwd
 nnoremap <silent> <Leader>e :Explore %:p:h<CR> " current file dir
+nnoremap <silent> <Leader>E :Explore<CR>       " current pwd
 
 " copying and pasting in vim :O
 vnoremap <Leader>y "+y
@@ -425,16 +425,34 @@ autocmd FileType tex,markdown,groff,html        set spell! spelllang=en_us
 "===============================
 
 let g:netrw_banner=0                            " disble banner 
-let g:netrw_browse_split=4                      " open in prior window
+let g:netrw_browse_split=0                      " open in-place window
 let g:netrw_altv=1                              " splits right
 let g:netrw_liststyle=3                         " display style
 let g:netrw_keepdir = 0
 let g:netrw_list_hide = '\(^\|\s\s\)\zs\.\S\+'  " hide dotfiles on open
-let g:netrw_winsize = 20                        " size of split
 let g:netrw_localcopydircmd = 'cp -r'           " copy recursively
 
 " highlight marked files
 hi! link netrwMarkFile Search
+
+autocmd filetype netrw call NetrwMapping()
+
+function! NetrwMapping()
+  nmap <buffer> H u
+  nmap <buffer> h -^
+  nmap <buffer> l <CR>
+
+  nmap <buffer> . gh
+  nmap <buffer> P <C-w>z
+
+  nmap <buffer> ff %:w<CR>:buffer #<CR>
+  nmap <buffer> fe R
+  nmap <buffer> fc mc
+  nmap <buffer> fC mtmc
+  nmap <buffer> fx mm
+  nmap <buffer> fX mtmm
+  nmap <buffer> f; mx
+endfunction
 
 "===============================
 " }}}
