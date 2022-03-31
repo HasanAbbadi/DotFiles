@@ -1,0 +1,10 @@
+#!/bin/sh
+
+echo "screen will stay awake as long as this script is active."
+while true; do 
+    xdotool mousemove 100 100
+    sleep 60
+    xdotool mousemove 900 900
+done
+
+

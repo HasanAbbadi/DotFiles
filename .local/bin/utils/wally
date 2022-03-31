@@ -1,0 +1,50 @@
+#!/bin/sh
+
+myWall=$(find $2 | shuf | head -n 1) 
+fullPath="$(pwd)/$myWall"
+
+helpMe(){
+    echo "
+  Usage: wally <flag> [DIRECTORY/IMG]
+
+    -h | --help ) displays this help message
+    -l | --loop ) changes the wallpaper every set amount of minutes
+    -i | --image ) specify image to set as wallpaper
+    -r | --random ) sets a random wallpaper
+    -o | --output ) only prints the output of a random image
+    "
+}
+
+outputOnly(){ find "$2" | shuf | head -n 1 ;}
+
+singleImage(){ 
+    [ -z "$2" ] && echo "Usage: wally -i [img]" && exit
+    xwallpaper --zoom "$2" 
+    notify-send -i "$(pwd)/$2" "Wallpaper Set!" 
+}
+
+randomWall(){ 
+    [ -z "$2" ] && echo "Usage: wally -r [DIR]" ;
+    xwallpaper --zoom "$(find $2 | shuf | head -n 1)" && notify-send -i "$fullPath" "Wallpaper Set!"; }
+
+
+loopMinutes(){
+    [ -z "$2" ] || [ -z "$3" ] && echo "Usage: wally -l [DIR] [TIME (in minutes) ]" && exit
+    while true
+    do
+    myWall=$(find $2 | shuf | head -n 1) 
+    fullPath="$(pwd)/$myWall"
+        xwallpaper --zoom "$myWall"
+        notify-send -i "$fullPath" "Wallpaper set!"
+        sleep "$3"m
+    done
+}
+
+case "$1" in
+    -h | --help | "" ) helpMe ;;
+    -o | --output ) outputOnly $@ ;;
+    -i | --image ) singleImage $@ ;;
+    -r | --random ) randomWall $@ ;;
+    -l | --loop ) loopMinutes $@ ;;
+    *) helpMe  ;;
+esac

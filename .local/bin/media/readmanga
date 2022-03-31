@@ -1,0 +1,49 @@
+#!/bin/sh
+[ ! -d ~/.cache/readmanga ] && mkdir ~/.cache/readmanga
+
+currentNotify(){
+    myInfo=$(cat ~/.cache/readmanga/"$myManga" | tail -n1 | sed "s|$HOME/manga/||g" | sed 's+/+ | +g')
+    notify-send "Currently Reading:
+$myInfo"
+}
+
+choose(){
+    myChapter=$(ls --color=auto ~/manga/"$myManga" | fzy)
+    [ -z "$myChapter" ] &&  echo "you think you're funny, huh." && exit
+    find ~/manga/"$myManga"/"$myChapter" | sort -V -k1 | sed 1d | imv > ~/.cache/readmanga/"$myManga"
+}
+
+newManga(){
+    echo "What is the name of the manga?"
+    read ANSWER
+    mangadl "$ANSWER" -r -d ~/manga/ 
+}
+
+outputOnly(){ cat ~/.cache/readmanga/"$myManga" | tail -n1 ; exit ; }
+
+readManga(){
+     find ~/manga/"$myManga" -mindepth 2 | sort -V -k1 | grep -A 1000000 "$myPage"
+     find ~/manga/end.jpg
+     find ~/manga/"$myManga" -mindepth 2 | sort -V -k1 | grep -B 1000000 "$myPage"
+}
+
+case "$1" in
+        -e ) vim ~/.cache/readmanga/ && exit ;;
+        -h ) echo "heh?" && exit ;;
+        -n ) newManga && exit ;;
+esac
+
+myManga=$(ls -d ~/manga/*/ -1 | cut -d '/' -f 5 | fzy )
+
+case "$1" in -c ) choose ; exit ;; -o ) outputOnly ;; esac
+
+[ -z "$myManga" ] &&  echo "you think you're funny, huh." && exit 
+
+if [[ -f ~/.cache/readmanga/$myManga ]]; then
+
+    myPage=$(cat ~/.cache/readmanga/"$myManga" | tail -n1 )
+    readManga | imv >> ~/.cache/readmanga/"$myManga" & currentNotify
+
+else
+    choose
+fi

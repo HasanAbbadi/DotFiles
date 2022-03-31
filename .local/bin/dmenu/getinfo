@@ -1,0 +1,21 @@
+#!/bin/sh
+
+OPTION="$(echo -ne "clock\nbattery\ndisk\npackages
+volume\ncpu\ntasks\nmemory\nkblayout
+forecast\nmailbox\nnews\nmoonphase" | dmenu -i -p "Info: ")"
+
+case $OPTION in
+  clock) notify-send "This Month" "$(cal --color=always | sed "s/..7m/<b><span color=\"red\">/;s/..27m/<\/span><\/b>/")" && notify-send "Appointments" "$(calcurse -d3)" ;;
+  battery) notify-send "Battery: " "🔋 $(cat /sys/class/power_supply/*/capacity)" ;;
+  disk) notify-send "💽 Disk space:" "$(df -h --output=target,used,size)" ;;
+  packages) notify-send "All:	Update:" "$(pacman -Qn | wc -l)	$(pacman -Qu | wc -l)" ;;
+  volume) notify-send "Volume: "  "🔉 $(pamixer --get-volume)" ;;
+  cpu) notify-send "🖥 CPU hogs" "$(ps axch -o cmd:15,%cpu --sort=-%cpu | head)\\n(100% per core)" ;;
+  tasks) notify-send "$(tsp -l | awk -v numr=0 -v numq=0 '{if (/running/)numr++; if (/queued/)numq++} END{print numr+numq"("numq")"}')" ;;
+  memory) notify-send "🧠 Memory hogs" "$(ps axch -o cmd:15,%mem --sort=-%mem | head)" ;;
+  kblayout) notify-send "Layout: " "$(setxkbmap -query | awk 'NR==3{print $2}')" ;;
+  forecast) notify-send "$(curl "wttr.in/?T0q" 2>/dev/null)" ;;
+  moonphase) notify-send "$(date '+%Y-%m-%d'): " "$(curl "wttr.in/?format=%m") 2>/dev/null" ;;
+  mailbox) notify-send  "🔃 $(find "${XDG_DATA_HOME:-$HOME/.local/share}"/mail/*/[Ii][Nn][Bb][Oo][Xx]/new/* -type f | wc -l 2>/dev/null)" ;;
+  news) notify-send "$(newsboat -x print-unread | awk '{ if($1>0) print "📰" $1}') $(cat "${XDG_CONFIG_HOME:-$HOME/.config}"/newsboat/.update 2>/dev/null)" ;;
+esac

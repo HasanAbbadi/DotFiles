@@ -1,0 +1,12 @@
+#!/bin/sh
+
+json=$(i3-msg -t get_tree)
+
+list=$(cat <<< $json | jq '.. | select(.window_type? == "unknown",.window_type? == "normal") | .name?'\
+           | grep -v "i3bar" | sed 's/"//g')
+
+name=$(cat <<< $list | dmenu -i -p "Window: " -l 10)
+
+id=$(cat <<< $json | jq ".. | select(.name? == \"${name}\") | .window" | head -n1)
+
+i3-msg "[id=\"${id}\"]" focus

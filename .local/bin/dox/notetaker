@@ -1,0 +1,15 @@
+#!/bin/sh
+
+Date=$(date +%y-%m-%d)
+FileName="${HOME}/dox/vimwiki/notes/${Date}.md"
+
+if [ ! -f $FileName ]; then
+  echo "# Notes for ${Date}" > $FileName
+fi
+
+vim -c "norm Go"\
+    -c "norm Go## $(date +%H:%M)"\
+    -c "norm G2o"\
+    -c "norm zz"\
+    -c "startinsert"\
+    $FileName

@@ -1,0 +1,16 @@
+#!/bin/sh
+
+browser='/usr/bin/lynx'
+
+[ ! -f $browser ] && echo $browser not installed && exit
+[ ! -f /usr/bin/surfraw ] && echo surfraw not installed && exit
+
+while true; do
+  elvi=$(surfraw -elvi | fzf --height=100 | awk '{print $1}')
+
+  echo -n "$elvi >>>  "
+  read QUERY
+  echo "$QUERY" | xsel -ib
+
+ surfraw -browser=$browser $elvi $QUERY
+done
