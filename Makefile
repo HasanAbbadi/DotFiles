@@ -1,14 +1,14 @@
 export PATH := ${HOME}/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/bin/core_perl
 
-PACKAGES	:= xorg-server xorg-xwininfo xorg-xinit ttf-linux-libertine bc xcompmgr xorg-xprop 
-PACKAGES	+= arandr dosfstools libnotify dunst exfat-utils sxiv xwallpaper ffmpeg 
-PACKAGES	+= gnome-keyring python-qdarkstyle mpd mpc mpv man-db ncmpcpp newsboat 
-PACKAGES	+= ntfs-3g pipewire pipewire-pulse pulsemixer pamixer maim unclutter unrar unzip 
-PACKAGES	+= lynx xcape xclip xdotool xorg-xdpyinfo youtube-dl mupdf poppler mediainfo fzf 
-PACKAGES	+= bat xorg-xbacklight slock socat moreutils rxvt-unicode urxvt-perls dmenu 
-PACKAGES	+= noto-fonts-emoji ttf-dejavu i3-gaps tmux gvim vimb picom rofi rofi-calc
+PACKAGES	:= arandr bat bc dmenu dosfstools dunst exfat-utils ffmpeg fzf fzy gnome-keyring 
+PACKAGES	+= gvim i3-gaps libnotify lynx maim man-db mediainfo moreutils mpc mpd mpv mupdf 
+PACKAGES	+= ncmpcpp newsboat noto-fonts-emoji ntfs-3g pamixer picom pipewire pipewire-pulse 
+PACKAGES	+= poppler pulsemixer python-qdarkstyle rofi rofi-calc rxvt-unicode slock socat 
+PACKAGES	+= sxiv tmux ttf-dejavu ttf-linux-libertine unclutter unrar unzip urxvt-perls vimb 
+PACKAGES	+= xcape xclip xcompmgr xdotool xorg-server xorg-xbacklight xorg-xdpyinfo 
+PACKAGES	+= xorg-xinit xorg-xprop xorg-xwininfo xwallpaper youtube-dl zsh 
 
-PY_PKGS		:= pywal lookatme
+PIP_PKGS	:= pywal lookatme
 
 BASE_PKGS	:= filesystem gcc-libs glibc bash coreutils file findutils gawk grep procps-ng 
 BASE_PKGS	+= sed tar gettext pciutils psmisc shadow util-linux bzip2 gzip xz licenses which 
@@ -18,8 +18,9 @@ BASE_PKGS	+= binutils bison fakeroot flex gcc groff libtool m4 make patch pkgcon
 
 PACMAN		:= sudo pacman -S --needed --noconfirm 
 PIP				:= sudo pip3 install 
-SYSTEMD_ENABLE	:= sudo systemctl --now enable
+SYSTEMD_ENABLE	:= sudo systemctl --now enable 
 LN		:= ln -vsf 
+AURHELPER := yay
 
 .DEFAULT_GOAL := help
 .PHONY: all allinstall
@@ -29,20 +30,23 @@ help:
 	| sort \
 	| awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-all: allinstall
+all: ## Install My Whole Config | Do all the following:
+	allinstall
 
 ${HOME}/.local:
 	mkdir -p $<
 
-init: ## Initial deploy dotfiles
+test:
+	echo $(AURHELPER)
+
+init: ## Initial Symlinks
 	# make the needed directories
 	mkdir -p ${HOME}/.config
-	mkdir -p ${HOME}/.local
-	find ${PWD}/.config -maxdepth 2 -type d | tail -n +1 | xargs -I{} mkdir -p ${HOME}/{}
+	find ${PWD}/.config -maxdepth 2 -type d | tail -n +1 | xargs -I{} mkdir -p $${HOME}/{}
 	# X11
 	$(LN) {${PWD},${HOME}}/.config/x11/xresources
 	$(LN) {${PWD},${HOME}}/.config/x11/xinitrc
-	$(LN) {${PWD},${HOME}}/.config/x11/xprofile
+	$(LN) ${PWD}/.config/x11/xprofile ${HOME}/xprofile
 	# SHELL
 	$(LN) {${PWD},${HOME}}/.config/shell/zshnameddirrc
 	$(LN) {${PWD},${HOME}}/.config/shell/bm-dirs
@@ -69,25 +73,34 @@ init: ## Initial deploy dotfiles
 	$(LN) {${PWD},${HOME}}/.config/sxiv/exec/key-handler
 
 scripts: ## Install my scripts
-	echo not done
+	mkdir -p $${HOME}/.local/bin
+	find .local/bin -maxdepth 2 -type d | tail -n +1 | xargs -I{} mkdir -p $${HOME}/{}
+	find .local/bin -type f | xargs -I{} $(LN) {${PWD},${HOME}}/{}
 
 base: ## Install base and base-devel package
 	$(PACMAN) $(BASE_PKGS)
 
-install: ## Install arch linux packages using pacman
-	$(PACMAN) $(PACKAGES)
-
 pip: ## Install Python and Pip Packages
 	$(PACMAN) python-pip
-	$(PIP)    $(PY_PKGS)
+	$(PIP)    $(PIP_PKGS)
 
-hosts:
-	sudo $(LN) {${PWD},}/etc/hosts
+pacman: ## Install packages & Make pacman colorful (eye-candy)
+	grep -q "ILoveCandy" /etc/pacman.conf || sed -i "/#VerbosePkgLists/a ILoveCandy" /etc/pacman.conf
+	sed -i "s/^#ParallelDownloads.*$/ParallelDownloads = 5/;s/^#Color$/Color/" /etc/pacman.conf
+	$(PACMAN) $(PACKAGES)
 
-intel: ## Setup Intel Graphics
-	sudo $(LN) {${PWD},}/etc/X11/xorg.conf.d/20-intel.conf
+aur: ## Install Aur Helper: [Default:Yay]
+	sudo mkdir -p "$${HOME}/.local/src/$(AURHELPER)"
+	sudo  git clone --depth 1 "https://aur.archlinux.org/$(AURHELPER).git" "${HOME}/.local/src/$(AURHELPER)" >/dev/null 2>&1 ||\
+		{ cd "$${HOME}/.local/src/$(AURHELPER)" || return 1 ; sudo git pull --force origin master;}
+	cd "$${HOME}/.local/src/$(AURHELPER)"
+	sudo -D "$${HOME}/.local/src/$(AURHELPER)" makepkg --noconfirm -si >/dev/null 2>&1 || return 1
 
-bluetooth: # Setup bluetooth for AS801 by AfterShokz
+xorg: ## Setup XOrg Configs
+	sudo cp {${PWD},}/etc/X11/xorg.conf.d/20-intel.conf
+	sudo cp {${PWD},}/etc/X11/xorg.conf.d/40-libinput.conf
+
+bluetooth: ## Setup bluetooth using [bluez]
 	$(PACMAN) bluez
 	$(SYSTEMD_ENABLE) $@
 
@@ -95,6 +108,6 @@ testpath: ## Echo PATH
 	PATH=$$PATH
 	@echo $$PATH | tr ':' '\n'
 
-allinstall: ## Install My Whole Config
-	gnupg base install pip init
-	bluetooth intel testpath
+allinstall:
+	base pacman aur pip init scripts
+	xorg bluetooth
