@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# Take Quick notes in markdown using `vimwiki`
+# It is bound to <$mod-n> by default in my i3 config.
+# It opens in a centered floating window: check out my i3 config.
+
 Date=$(date +%y-%m-%d)
 FileName="${HOME}/dox/vimwiki/notes/${Date}.md"
 
