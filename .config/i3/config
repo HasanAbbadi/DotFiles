@@ -179,7 +179,7 @@ bindsym $mod+F3          exec displayselect
 #bindsym $mod+F4          exec
 #bindsym $mod+F5          exec
 #bindsym $mod+F6          exec
-#bindsym $mod+F7          exec
+bindsym $mod+F7          exec passmenu
 bindsym $mod+F8          exec dmenuhandler
 #bindsym $mod+F9          exec
 #bindsym $mod+F10         exec
