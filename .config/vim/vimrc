@@ -1,4 +1,11 @@
-" .vimrc
+" __     _____ __  __ ____   ____
+" \ \   / /_ _|  \/  |  _ \ / ___|
+"  \ \ / / | || |\/| | |_) | |
+"   \ V /  | || |  | |  _ <| |___
+"    \_/  |___|_|  |_|_| \_\\____|
+"
+"          git@HasanAbbadi
+"               2022
 
 " Init: ===============" {{{
 set runtimepath^=$XDG_CONFIG_HOME/vim
@@ -115,7 +122,7 @@ function! ModifyPair(type)
   if a:type == "Delete"
     if is == 1 | return "\<bs>\<right>\<bs>" | else | return "\<bs>" | endif
   endif
-  if is == 1 | return "\<CR>\<CR>\<up>"    | else | return "\<CR>" | endif
+  if is == 1 | return "\<CR>\<CR>\<up>\<TAB>"    | else | return "\<CR>" | endif
 endfunction
 
 " scrolling
@@ -194,10 +201,10 @@ hi FoldColumn ctermbg=none ctermfg=yellow
 hi Comment cterm=Italic
 
 " pop up menu for auto completion
-hi Pmenu      cterm=NONE ctermbg=0       ctermfg=64
-hi PmenuSel   cterm=bold ctermbg=234     ctermfg=lightgreen
-hi PmenuSbar  cterm=bold ctermbg=234
-hi PmenuThumb ctermbg=64
+" hi Pmenu      cterm=NONE ctermbg=0       ctermfg=64
+" hi PmenuSel   cterm=bold ctermbg=234     ctermfg=lightgreen
+" hi PmenuSbar  cterm=bold ctermbg=234
+" hi PmenuThumb ctermbg=64
 
 " tabline
 hi TabLineFill cterm=NONE   ctermbg=0
@@ -218,14 +225,15 @@ nnoremap <silent> <C-u> :call SmoothScroll(1)<Enter>
 nnoremap <silent> <C-d> :call SmoothScroll(0)<Enter>
 
 " switch languages:
-nnoremap <Leader>en :<C-U>call EngType()<CR>
+nnoremap <Leader>us :<C-U>call EngType()<CR>
 nnoremap <Leader>ar :<C-U>call AraType()<CR>
 
 " files:
-nnoremap <Leader>ff :find 
 nnoremap <leader>fa :call Fuzzy()<CR>
+nnoremap <Leader>ff :find 
 nnoremap <Leader>fi gg=G2<C-o>                   " fix indentaions
 nnoremap <Leader>fo :browse oldfiles<CR>
+nnoremap <Leader>ft :set ft=
 nnoremap <Leader>br :browse 
 nnoremap <Leader>so :so %<CR>                    " source current file
 nnoremap <Leader>sv :so ~/.config/vim/vimrc<CR>  " source vimrc
@@ -253,7 +261,7 @@ vnoremap < <gv
 
 " easier substitution
 nnoremap <Leader>ss :%s//g<left><left>
-nnoremap <Leader>sl :s//g<left><left>
+nnoremap <Leader>s. :s//g<left><left>
 vnoremap <Leader>s  "xy:%s/<C-r>x/
 nnoremap <Leader>sc :%s/<C-r><C-w>/<C-r>0/g<CR>
 
@@ -295,13 +303,14 @@ nnoremap <silent> <C-n> :bn<CR>
 nnoremap <silent> <C-p> :bp<CR>
 nnoremap <silent> <Leader>bl :buffers<CR>
 nnoremap <Leader>bt :buffers<CR>:buffer 
+nnoremap <Leader>sl :buffers<CR>:buffer 
 nnoremap <silent> <Leader>bd :bufdo delete<CR>
 
 " changing between tabs made easier
 nnoremap <silent> <Tab> :tabnext<CR>
 nnoremap <silent> <S-Tab> :tabprevious<CR>
 nnoremap <Leader>tn :tabnew 
-nnoremap <Leader>te :tabnew<CR>
+nnoremap <Leader>te :tabnew<CR>:set ft=
 nnoremap <Leader>tt :tabs<CR>:tab 
 nnoremap <Leader>tf :tabe %<CR>
 nnoremap <Leader>th :tab help 
@@ -456,5 +465,3 @@ endfunction
 
 "===============================
 " }}}
-
-" 2021-2022

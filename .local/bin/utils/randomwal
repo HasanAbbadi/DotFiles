@@ -1,0 +1,10 @@
+#!/bin/sh
+
+DIR="${XDG_DATA_HOME:-$HOME/.local/share}/wallhaven/"
+random="$(find "$DIR" -type f | shuf | head -n1)"
+
+# reload i3
+i3-msg reload
+# restart dunst
+wal -i "$random" $*
+[ $(dunstctl is-paused) == "false" ] && killall -SIGUSR1 dunst ; killall -SIGUSR2 dunst

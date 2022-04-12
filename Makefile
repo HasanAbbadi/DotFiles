@@ -85,6 +85,7 @@ pip: ## Install Python and Pip Packages
 	$(PIP)    $(PIP_PKGS)
 
 pacman: ## Install packages & Make pacman colorful (eye-candy)
+	sudo pacman --noconfirm -S archlinux-keyring
 	grep -q "ILoveCandy" /etc/pacman.conf || sed -i "/#VerbosePkgLists/a ILoveCandy" /etc/pacman.conf
 	sed -i "s/^#ParallelDownloads.*$/ParallelDownloads = 5/;s/^#Color$/Color/" /etc/pacman.conf
 	$(PACMAN) $(PACKAGES)

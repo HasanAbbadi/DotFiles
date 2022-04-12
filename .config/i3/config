@@ -27,6 +27,12 @@ for_window [instance="notetaker"] floating enable
 for_window [instance="notetaker"] resize set 700 500
 for_window [instance="notetaker"] move position center
 
+for_window [instance="qalculator"] floating enable
+for_window [instance="qalculator"] resize set 700 500
+for_window [instance="qalculator"] move scratchpad
+for_window [instance="qalculator"] move position center
+exec --no-startup-id $term -fn "xft:mono:pixelsize=25" -name qalculator -e qalc
+
 # start when i3 starts & reloads
 exec_always remaps                                             # run the remaps script.
 
@@ -55,8 +61,10 @@ bindsym $mod+Return  exec /usr/bin/$term
 
 # start rofi (a program launcher)
 bindsym $mod+d                exec /usr/bin/rofi -show run
-bindsym $mod+i                exec ~/.local/bin/mine/getinfo
-bindsym $mod+apostrophe       exec /usr/bin/rofi -show calc
+bindsym $mod+i                exec getinfo
+#bindsym $mod+apostrophe       exec /usr/bin/rofi -show calc
+bindsym $mod+shift+p          exec dmenupomo
+bindsym $mod+apostrophe       [instance="qalculator"] scratchpad show; move position center
 bindsym $mod+shift+apostrophe exec /usr/bin/rofi -show emoji
 
 # switch between opened windows
@@ -153,46 +161,46 @@ bindsym $mod+Shift+space floating toggle
 bindsym $mod+space focus mode_toggle
 
 # handling audio
-bindsym $mod+0               exec pamixer -t
-bindsym $mod+equal           exec pamixer --allow-boost -i 3
-bindsym $mod+minus           exec pamixer --allow-boost -d 3
-bindsym $mod+Shift+equal     exec pamixer --allow-boost -i 15
-bindsym $mod+Shift+minus     exec pamixer --allow-boost -d 15
+bindsym $mod+0               exec pamixer -t                  ; exec volper
+bindsym $mod+equal           exec pamixer --allow-boost -i 3  ; exec volper
+bindsym $mod+minus           exec pamixer --allow-boost -d 3  ; exec volper
+bindsym $mod+Shift+equal     exec pamixer --allow-boost -i 15 ; exec volper
+bindsym $mod+Shift+minus     exec pamixer --allow-boost -d 15 ; exec volper
 bindsym $mod+p               exec mpc toggle
 bindsym $mod+comma           exec mpc seek -10
 bindsym $mod+period          exec mpc seek +10
 bindsym $mod+Shift+period    exec mpc next
 bindsym $mod+Shift+comma     exec mpc prev
 
-# the function keys
-#bindsym $mod+F1  exec
-#bindsym $mod+F2  exec
-bindsym $mod+F3  exec $HOME/.local/bin/displayselect
-#bindsym $mod+F4  exec
-#bindsym $mod+F5  exec
-#bindsym $mod+F6  exec
-#bindsym $mod+F7  exec
-bindsym $mod+F8  exec $HOME/.local/bin/dmenuhandler
-#bindsym $mod+F9  exec
-#bindsym $mod+F10 exec
-#bindsym $mod+F11 exec
-#bindsym $mod+F12 exec
+## the function keys
+#bindsym $mod+F1          exec
+#bindsym $mod+F2          exec
+bindsym $mod+F3          exec displayselect
+#bindsym $mod+F4          exec
+#bindsym $mod+F5          exec
+#bindsym $mod+F6          exec
+#bindsym $mod+F7          exec
+bindsym $mod+F8          exec dmenuhandler
+#bindsym $mod+F9          exec
+#bindsym $mod+F10         exec
+#bindsym $mod+F11         exec
+#bindsym $mod+F12         exec
 
-# those 9 keys
-bindsym $mod+Print exec $HOME/.local/bin/maimpick
-#bindsym $mod+Scroll_lock
-#bindsym $mod+Pause
-bindsym $mod+Insert exec $HOME/.local/bin/newpass
-#bindsym $mod+Prior
-#bindsym $mod+Delete
-#bindsym $mod+Home
-#bindsym $mod+End
-#bindsym $mod+Next
+## those 9 keys
+bindsym $mod+Print       exec maimpick
+#bindsym $mod+Scroll_lock exec
+#bindsym $mod+Pause       exec
+bindsym $mod+Insert      exec newpass
+#bindsym $mod+Prior       exec
+#bindsym $mod+Delete      exec
+#bindsym $mod+Home        exec
+#bindsym $mod+End         exec
+#bindsym $mod+Next        exec
 
 # more using the keyboard buttons
 bindsym XF86AudioMute        exec pamixer -t
-bindsym XF86AudioRaiseVolume exec pamixer --allow-boost -i 3
-bindsym XF86AudioLowerVolume exec pamixer --allow-boost -d 3
+bindsym XF86AudioRaiseVolume exec pamixer --allow-boost -i 3 ; exec volper
+bindsym XF86AudioLowerVolume exec pamixer --allow-boost -d 3 ; exec volper
 bindsym XF86AudioPrev        exec mpc prev
 bindsym XF86AudioNext        exec mpc next
 bindsym XF86AudioPause       exec mpc pause
@@ -202,7 +210,7 @@ bindsym XF86AudioRewind      exec mpc seek -10
 bindsym XF86AudioForward     exec mpc seek +10
 
 # choose a system action with dmenu
-bindsym $mod+BackSpace exec $HOME/.local/bin/sysact
+bindsym $mod+BackSpace exec sysact
 # reload the configuration file
 bindsym $mod+Shift+r reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)

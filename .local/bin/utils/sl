@@ -1,6 +1,6 @@
 #!/bin/sh
 
-browser='/usr/bin/lynx'
+browser='/usr/bin/w3m'
 
 [ ! -f $browser ] && echo $browser not installed && exit
 [ ! -f /usr/bin/surfraw ] && echo surfraw not installed && exit

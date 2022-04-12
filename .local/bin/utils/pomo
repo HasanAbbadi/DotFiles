@@ -1,0 +1,61 @@
+#!/bin/sh
+
+tmpfile="/tmp/timer"
+EMOJI="⏳"
+alarmSound="$HOME/dl/alarm.wav"
+
+function format()
+{
+  case $1 in
+    [0-9]) date=$((`date +%s` + $1));;
+    *h)    hour=$((`sed "s/[A-za-z]//" <<< $1` * 120)) &&\
+             date=$((`date +%s` + $hour));;
+    *m)    mins=$((`sed "s/[A-za-z]//" <<< $1` * 60)) &&\
+             date=$((`date +%s` + $mins));;
+    *)     echo "not an option" ;;
+  esac
+
+  timer $date & disown
+}
+
+function timer()
+{
+  # date -> 0
+  while [ "$date" -ne `date +%s` ]; do
+    echo " $(date -u --date @$(($date - `date +%s`)) +%M:%S) ${EMOJI}" > $tmpfile
+    sleep 1
+  done
+
+  # play alarm audio file
+  [ -f $alarmSound ] &&\
+    mpv --no-video --no-resume-playback --really-quiet $HOME/dl/alarm.wav &
+
+  # 0 -> -inf
+  while true; do
+    echo "-$(date -u --date @$((`date +%s` - $date)) +%M:%S) ${EMOJI}" > $tmpfile
+    sleep 1
+  done
+}
+
+pause() {
+  sed -i 's/^\ /*/' $tmpfile
+  killall pomo >/dev/null
+  echo paused timer at $(cat $tmpfile)
+}
+
+resume() {
+  sed -i 's/^\*/00:/'   $tmpfile
+  sed -i "s/${EMOJI}//" $tmpfile
+  old=$(date -d"`cat $tmpfile`" +%s)
+  date=$((`date +%s` + $old))
+  timer $date & disown
+}
+
+
+case $1 in
+  resume) resume $@ ;;
+  pause)  pause ;;
+  stop)   echo ' Done!' > $tmpfile ; killall pomo >/dev/null ;;
+  time)   notify-send "Pomo Time Left: " "$(cat $tmpfile)" ;;
+  *)      format $@ ;;
+esac

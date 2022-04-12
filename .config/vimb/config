@@ -11,7 +11,7 @@ set spell-checking=true
 
 # Set comma separated list of spell checking languages to be used for
 # spell checking.
-set spell-checking-languages=en,de
+set spell-checking-languages=en
 
 # Enable or disable support for WebGL on pages.
 set webgl=true

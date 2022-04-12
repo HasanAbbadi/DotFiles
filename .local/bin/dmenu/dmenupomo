@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Options;
+ACTION=$(printf "Time\nPause\nResume\nStop" | dmenu -i -p "Pomodoro: ")
+# UPPERCASE --> lowercase
+ACTION=$(sed -e 's/\(.*\)/\L\1/' <<< $ACTION)
+
+pomo $ACTION
